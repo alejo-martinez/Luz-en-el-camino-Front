@@ -13,9 +13,11 @@ interface User{
 interface SessionContext {
     isLogged:boolean;
     usuario: User | undefined;
-    login: (user:any)=> void;
-    register: (user:any)=> void;
-    logout: ()=> void;
+    login: (user:any)=> void | any;
+    register: (user:any)=> void | any;
+    logout: ()=> any;
+    sendCode: ()=> any;
+    loading: boolean;
 }
 
 const SessionContext = createContext<SessionContext | undefined>(undefined);
@@ -24,6 +26,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const [usuario, setUsuario] = useState<any>(null);
     const [isLogged, setIsLogged] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const current = async()=>{
         try {
@@ -39,9 +42,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         try {
             const result = await api.post('/api/session/login', user);
             const data = result.data;
+            console.log(data.payload)
             setUsuario(data.payload);
+            localStorage.setItem('usuario', JSON.stringify(data.payload));
+
         } catch (error) {
-            console.log(error);
+            console.log(`Error aqui: ${error}`);
+            return error;
         }
     }
 
@@ -49,9 +56,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         try {
             const result = await api.post('/api/session/register', user);
             const data = result.data;
-            console.log(data.payload);
+            console.log(result.data)
         } catch (error) {
             console.log(error);
+            return error;
         }
     }
 
@@ -59,18 +67,37 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         try {
             const result = await api.delete('/api/session/login');
             const data = result.data;
-            if(data.status === 'succes') setUsuario(null)
+            if(data.status === 'succes'){
+                setUsuario(null);
+                localStorage.removeItem('usuario');
+                return data;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const sendCode = async()=>{
+        try {
+            
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(()=>{
+        const storedUser = localStorage.getItem('usuario');
+        if (storedUser) {
+            setUsuario(JSON.parse(storedUser));
+            setLoading(false);
+        } else {
             current();
+            setLoading(false);
+        }
     }, [])
 
     return (
-        <SessionContext.Provider value={{usuario, login, isLogged, register, logout}}>
+        <SessionContext.Provider value={{usuario, login, isLogged, register, logout, sendCode, loading}}>
             {children}
         </SessionContext.Provider>
     )

@@ -3,13 +3,29 @@
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "@/context/SessionContext";
+import { useRouter } from "next/navigation";
 import api from "@/app/utils/axiosInstance";
 
 import { useSidebar } from "@/context/SidebarContext";
+import {Ruwudu, Cairo} from 'next/font/google'
+
+const roboto = Ruwudu({
+    subsets:['arabic'],
+    weight:['400']
+})
+
+const cairo = Cairo({
+    subsets:['arabic'],
+    weight:['400']
+})
 
 const UploadVideo = () => {
     const { showSidebar } = useSidebar();
+    const {usuario, loading} = useSession();
+
+    const router = useRouter();
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string | null>(null);
@@ -47,6 +63,12 @@ const UploadVideo = () => {
             console.error("Error al subir el archivo:", error);
         }
     };
+
+    useEffect(()=>{
+        if(!loading){
+            if(!usuario || usuario.rol !== 'admin') router.push('/');
+        }
+    }, [loading]);
 
     return (
         <div>

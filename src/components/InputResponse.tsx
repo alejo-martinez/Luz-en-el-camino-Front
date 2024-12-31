@@ -6,23 +6,47 @@ import { Dialog, DialogPanel, Transition } from "@headlessui/react";
 
 import { useModal } from "@/context/ModalContext";
 import { DialogTitle } from "@mui/material";
+import { Ruwudu, Cairo } from 'next/font/google'
+import { useRouter } from "next/navigation";
 
-interface ModalProps{
+const roboto = Ruwudu({
+    subsets: ['arabic'],
+    weight: ['400']
+})
+
+const cairo = Cairo({
+    subsets: ['arabic'],
+    weight: ['400']
+})
+
+interface ModalProps {
     id: string
 }
 
-const ModalResponse = (props:ModalProps) => {
+const ModalResponse = () => {
+    const router = useRouter();
+
     const { open, setOpen, sendResponse } = useModal();
     const [comment, setComment] = useState('');
 
-    const handleComment = (e:any)=>{
+    const [status, setStatus] = useState(false);
+
+    const handleComment = (e: any) => {
         e.preventDefault();
         setComment(e.target.value);
     }
 
-    const handleSubmit = async(e:any)=>{
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        await sendResponse(props.id, comment);
+        const response = await sendResponse(comment);
+        if (response.status === 'succes') {
+            setStatus(true);
+            setTimeout(()=>{
+                window.location.reload();
+            }, 2000);
+            // router.push(window.location.href);
+            
+        }
     }
 
     return (
@@ -32,15 +56,19 @@ const ModalResponse = (props:ModalProps) => {
                     <div className="fixed inset-0 bg-black bg-opacity-25" />
                     <div className="fixed inset-0 flex items-center justify-center p-4">
                         <DialogPanel className="bg-white p-6 rounded shadow-lg max-w-md flex flex-col items-center">
-                            <DialogTitle>Responder comentario</DialogTitle>
-                            <input
-                                type="text"
-                                className="mt-4 p-2 border rounded w-full"
-                                placeholder="Escribe tu respuesta..."
-                                value={comment}
-                                onChange={handleComment}
-                            />
-                            <button onClick={handleSubmit} className="mt-4 btn w-fit">Enviar</button>
+                            <DialogTitle>{status ? 'Respuesta enviada !' : 'Responder comentario'}</DialogTitle>
+                            {!status &&
+                                <div className="flex flex-col items-center">
+                                    <input
+                                        type="text"
+                                        className="mt-4 p-2 border rounded w-full"
+                                        placeholder="Escribe tu respuesta..."
+                                        value={comment}
+                                        onChange={handleComment}
+                                    />
+                                    <button onClick={handleSubmit} className="mt-4 btn w-fit p-2 bg-black rounded text-white">Enviar</button>
+                                </div>
+                            }
                         </DialogPanel>
                     </div>
                 </Dialog>

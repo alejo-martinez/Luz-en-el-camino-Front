@@ -6,7 +6,9 @@ import { useSidebar } from "@/context/SidebarContext";
 import { Cairo } from 'next/font/google';
 import { IconButton } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import { useSession } from "@/context/SessionContext";
+import {useRouter} from "next/navigation";
 
 const cairo = Cairo({
     subsets: ['arabic'],
@@ -15,9 +17,11 @@ const cairo = Cairo({
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
-    const {logout, usuario} = useSession();
+    const { logout, usuario } = useSession();
     let timeoutId: any; // Para almacenar el timeout
     const { showSidebar } = useSidebar();
+
+    const router = useRouter();
 
     const handleMouseEnter = () => {
         clearTimeout(timeoutId); // Limpia cualquier timeout existente
@@ -31,9 +35,19 @@ export default function Sidebar() {
         }, 200); // Tiempo de espera antes de ocultar el menú
     };
 
+    const redirectInstagram = () => {
+        router.push('https://www.instagram.com/luzen_elcamino/');
+    }
+
 
     return (
         <div className={`h-full pr-4 color-navbar ${cairo.className} ${showSidebar ? 'sidebar-enter' : 'sidebar-exit'} transition-transform duration-500 ease-in-out`}>
+            <div className="ml-3">
+                {/* onClick={redirectInstagram} */}
+                <button title="Ir al instagram" onClick={redirectInstagram}>
+                    <InstagramIcon style={{ fontSize: 40, color: '#fff' }} />
+                </button>
+            </div>
             <ul className="flex flex-col ml-4 w-max space-y-4 pt-5">
                 <li>
                     <Link href={"/"}>
@@ -88,10 +102,10 @@ export default function Sidebar() {
                         </ul>
                     </div>
                 </li>
-                {(usuario && usuario.rol === 'admin')&&
-                <li className={`transition-transform duration-300 ease-in-out ${isOpen ? 'transform' : ''}`}>
-                    <Link href={"/panel"}><span className="text-white font-bold">Subir contenido</span></Link>
-                </li>
+                {(usuario && usuario.rol === 'admin') &&
+                    <li className={`transition-transform duration-300 ease-in-out ${isOpen ? 'transform' : ''}`}>
+                        <Link href={"/panel"}><span className="text-white font-bold">Subir contenido</span></Link>
+                    </li>
                 }
             </ul>
         </div>

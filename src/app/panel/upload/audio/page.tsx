@@ -2,15 +2,30 @@
 
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import { useRouter } from "next/navigation";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useSidebar } from "@/context/SidebarContext";
+import { useSession } from "@/context/SessionContext";
 
 import api from "@/app/utils/axiosInstance";
+import {Ruwudu, Cairo} from 'next/font/google'
+
+const roboto = Ruwudu({
+    subsets:['arabic'],
+    weight:['400']
+})
+
+const cairo = Cairo({
+    subsets:['arabic'],
+    weight:['400']
+})
 
 const UploadAudio = () => {
     const { showSidebar } = useSidebar();
+    const {usuario, loading} = useSession();
+    const router = useRouter();
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string | null>(null);
@@ -48,6 +63,12 @@ const UploadAudio = () => {
             console.error("Error al subir el archivo:", error);
         }
     };
+
+    useEffect(()=>{
+        if(!loading){
+            if(!usuario || usuario.rol !== 'admin') router.push('/');
+        }
+    }, [loading]);
 
     return (
         <div>

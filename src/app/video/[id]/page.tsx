@@ -4,11 +4,28 @@ import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 
 import { useParams } from 'next/navigation';
-
 import { useState, useEffect } from "react";
-
+import { useSession } from "@/context/SessionContext";
+import { useModal } from '@/context/ModalContext';
+import { useComent } from "@/context/ComentContext";
 import { useSidebar } from "@/context/SidebarContext";
 import api from "@/app/utils/axiosInstance";
+import ModalResponse from '@/components/InputResponse';
+import { Ruwudu, Cairo } from 'next/font/google'
+import Swal from "sweetalert2";
+import { BoxComents } from "@/components/BoxComents";
+import { toast } from "react-toastify";
+import { Footer } from "@/components/Footer";
+
+const roboto = Ruwudu({
+    subsets: ['arabic'],
+    weight: ['400']
+})
+
+const cairo = Cairo({
+    subsets: ['arabic'],
+    weight: ['400']
+})
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
@@ -21,10 +38,14 @@ const ShowVideo = () => {
 
     const { id } = useParams();
     const { showSidebar } = useSidebar();
-    
-    const [video, setVideo] = useState<any>(null);
+    const { usuario } = useSession();
+    const { setOpen } = useModal();
+    const { sendComent } = useComent()
 
-    const fetchData = async(videoId:any)=>{
+    const [video, setVideo] = useState<any>(null);
+    const [coment, setComent] = useState<any>({ author: '', text: '' });
+
+    const fetchData = async (videoId: any) => {
         const response = await api(`${baseUrl}/api/video/${videoId}`);
         const data = response.data;
         data.payload.comments.forEach((comment: any) => {
@@ -33,9 +54,39 @@ const ShowVideo = () => {
         setVideo(data.payload);
     }
 
-    useEffect(()=>{
+    const handleChange = (e: any) => {
+        setComent({ ...coment, [e.target.name]: e.target.value });
+    }
+
+    const comentVideo = (e: any) => {
+        e.preventDefault();
+        if (coment.text.length < 1) Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ingrese un comentario porfavor'
+        })
+        else {
+            const date = new Date();
+            const formattedDate = formatDate(date);
+            const obj = { author: coment.author, text: coment.text, id: video._id, type: 'video', title: video.title };
+            sendComent(obj);
+            toast.success('Comentario enviado!', {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            })
+            setComent({autor:'', text:''});
+            const comentarios = [...video.comments];
+            comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
+            setVideo({...video, comments: comentarios})
+        }
+    }
+
+    useEffect(() => {
         fetchData(id);
-    },[]);
+    }, []);
 
     return (
         <div>
@@ -50,7 +101,7 @@ const ShowVideo = () => {
                     <Navbar />
                 </div>
                 <div className="min-h-full justify-items-center">
-                    <h1 className="font-bold text-3xl mt-8 mb-8">{video?.title}</h1>
+                    <h1 className={`font-bold text-4xl mt-8 mb-8 ${roboto.className}`}>{video?.title}</h1>
                     <div>
                         <video
                             src={video?.path}
@@ -66,49 +117,41 @@ const ShowVideo = () => {
                         </video>
                     </div>
                     {video?.comments.length > 0 ?
-                            <div className='w-4/5 bg-white flex flex-col gap-y-1 justify-center justify-self-center p-8 rounded-ss-lg rounded-se-lg'>
-                                {video.comments?.map((comment: any, index: number) => {
-                                    return (
-                                        <div key={index} className='border-solid border-2 border-inherit p-2'>
-                                            <div className='grid flex-col'>
-                                                <div className='flex'>
-                                                    <p className='text-stone-900'>{comment.comment.author ? `${comment.comment.author}` : `Anónimo`}</p>
-                                                </div>
-                                                <div className=''>
-                                                    <p className='text-stone-400'>Comentado el {comment.comment.created_at}</p>
-                                                </div>
-                                                <div>
-                                                    <p className='text-stone-900 first-letter:uppercase'>{comment.comment.text}</p>
-                                                </div>
-                                                {comment.comment.response &&
-                                                    <div className='mt-4'>
-                                                        <div className='flex items-center'>
-                                                            <img src="/piespiedras.webp" alt="" className='object-contain rounded-lg' width={50} />
-                                                            <p className='text-stone-900 ml-2'>Luz en el camino respondió:</p>
-                                                        </div>
-                                                        <p className='text-stone-400 ml-14 first-letter:uppercase'>{comment.comment.response}</p>
-                                                    </div>
-                                                }
-
-                                            </div>
-
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                            :
-                            <div>
-                                <p>No hay comentarios</p>
-                            </div>
-                        }
-                        <div className='flex justify-center w-full'>
-                            <form className='flex justify-center w-4/5 bg-white border-2 border-solid'>
-                                <input type="text" className='w-full p-1' placeholder='Escribe un comentario...' />
-                                <button className='bg-black p-1 rounded color-cards text-white font-bold'>Enviar</button>
+                        <BoxComents file={video} type="video"/>
+                        :
+                        <div>
+                            <p>No hay comentarios</p>
+                        </div>
+                    }
+                    {(usuario && usuario.rol === 'admin') ?
+                        <div></div>
+                        :
+                        <div className="form-container mt-4 max-ss:w-full">
+                            <form className="form">
+                                <div className="form-group">
+                                    <label>Su nombre</label>
+                                    <input type="text" placeholder="(Opcional)" name="author" onChange={handleChange} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Comentario</label>
+                                    <textarea
+                                        name="text"
+                                        rows={10}
+                                        cols={50}
+                                        required={true}
+                                        defaultValue={""}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <button className="form-submit-btn" onClick={comentVideo}>
+                                    Enviar
+                                </button>
                             </form>
                         </div>
+                    }
                 </div>
             </div>
+            <ModalResponse />
         </div>
     )
 }

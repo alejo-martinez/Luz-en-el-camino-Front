@@ -22,11 +22,11 @@ export default function Initial() {
 
             <div className="p-4 h-32 color-navbar shadow-2xl rounded mb-32 flex flex-col content-center flex-wrap w-fit justify-self-center justify-between border-double border-4 border-white text-white">
                 <div>
-                <p className="text-center">Este es el inicio del camino...</p>
+                <p className={`text-center ${cairo.className}`}>Este es el inicio del camino...</p>
                 </div>
                 <div className="">
                     <Link href="https://luzenelcaminopdfs.s3.us-east-2.amazonaws.com/La+noche+oscura.pdf">
-                        <p className="text-center text-lg">Leer "la noche oscura"</p>
+                        <p className={`text-center text-lg ${cairo.className}`}>Leer "La noche oscura"</p>
                     </Link>
                 </div>
             </div>

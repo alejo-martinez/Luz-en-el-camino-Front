@@ -13,6 +13,17 @@ import PauseIcon from '@mui/icons-material/Pause';
 import Slider from '@mui/material/Slider';
 import { useAudio } from '@/context/AudioContext';
 import { formatTime } from '@/app/utils/utils';
+import {Ruwudu, Cairo} from 'next/font/google'
+
+const roboto = Ruwudu({
+    subsets:['arabic'],
+    weight:['400']
+})
+
+const cairo = Cairo({
+    subsets:['arabic'],
+    weight:['400']
+})
 
 interface PropsComponent {
     audio: {
@@ -67,15 +78,15 @@ export const MediaControlCard: React.FC<PropsComponent> = ({ audio, durationS })
     };
 
     return (
-        <Card sx={{ display: 'flex', backgroundColor: 'rgba(94, 5, 60, 0.801)', width:500 }}>
+        <Card sx={{ display: 'flex', backgroundColor: 'rgb(89, 66, 112)', maxWidth:500, }}>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
                 <CardContent sx={{ flex: '1 0 auto', textAlign: 'center' }}>
-                    <Typography component="div" variant="h5" sx={{color: 'white', fontWeight:'bold'}}>
+                    <Typography component="div" variant="h5" sx={{color: 'white', fontWeight:'bold', fontFamily:roboto.className}}>
                         {audio?.title}
                     </Typography>
                     <Typography variant="body2" component="div" sx={{color: 'white', fontWeight:'bold'}}>
-                        Tiempo: {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} / {durationS}
+                        {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} / {durationS}
                     </Typography>
                     <Slider
                         value={sliderValue} // Valor del slider basado en el tiempo actual

@@ -6,6 +6,9 @@ import { AudioProvider } from '../context/AudioContext'; // Asegúrate de import
 import { SidebarProvider } from "@/context/SidebarContext";
 import { SessionProvider } from "@/context/SessionContext";
 import { ModalProvider } from "@/context/ModalContext";
+import { ComentProvider } from "@/context/ComentContext";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,15 +36,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ModalProvider>
-        <SessionProvider>
-          <SidebarProvider>
-            <AudioProvider>
-              {children}
-            </AudioProvider>
-          </SidebarProvider>
-        </SessionProvider>
-      </ModalProvider>
+        <ComentProvider>
+          <ModalProvider>
+            <SessionProvider>
+              <SidebarProvider>
+                <AudioProvider>
+                  <ToastContainer/>
+                  {children}
+                </AudioProvider>
+              </SidebarProvider>
+            </SessionProvider>
+          </ModalProvider>
+        </ComentProvider>
       </body>
     </html>
   );

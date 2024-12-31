@@ -7,6 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import UserPanel from "@/components/UserPanel";
 import Initial from "@/components/Home";
 import Sidebar from "@/components/Sidebar";
+import { Footer } from "@/components/Footer";
 import { useEffect, useState } from 'react';
 // import AudioPlayer from '../components/AudioPlayer';
 import { useAudio } from "@/context/AudioContext";
@@ -19,10 +20,6 @@ export default function Home() {
   const { showSidebar } = useSidebar();
   const { isPlaying } = useAudio()
 
-  const audioData = {
-    title: 'Título del Audio',
-    path: '/ruta/al/audio.mp3', // Cambia esto por la ruta real de tu audio
-  };
 
   useEffect(() => {
     setLoading(false);
@@ -38,7 +35,6 @@ export default function Home() {
         }
       </div>
       <div>
-
         <div className="">
           <Navbar />
         </div>
