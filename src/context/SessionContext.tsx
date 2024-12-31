@@ -13,8 +13,8 @@ interface User{
 interface SessionContext {
     isLogged:boolean;
     usuario: User | undefined;
-    login: (user:any)=> void | Promise<{response:{data:{status:string, error: string}}}>;
-    register: (user:any)=> void | Promise<{response:{data:{status:string, error: string}}}>;
+    login: (user:UserLogin)=> void | Promise<{response:{data:{status:string, error: string}}}>;
+    register: (user:UserRegistered)=> void | Promise<{response:{data:{status:string, error: string}}}>;
     logout: ()=> Promise<{status:string, }>;
     loading: boolean;
 }
@@ -34,7 +34,7 @@ const SessionContext = createContext<SessionContext | undefined>(undefined);
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
-    const [usuario, setUsuario] = useState<any>(null);
+    const [usuario, setUsuario] = useState<User | undefined>(undefined);
     const [isLogged, setIsLogged] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -93,7 +93,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             const result = await api.delete('/api/session/login');
             const data = result.data;
             if(data.status === 'succes'){
-                setUsuario(null);
+                setUsuario(undefined);
                 localStorage.removeItem('usuario');
                 return data;
             }

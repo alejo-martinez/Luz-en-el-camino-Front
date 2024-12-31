@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React from "react";
 import { useSession } from "@/context/SessionContext";
 import { useModal } from "@/context/ModalContext";
 import {Cairo } from 'next/font/google'
