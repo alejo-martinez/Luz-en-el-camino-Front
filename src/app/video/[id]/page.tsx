@@ -28,12 +28,13 @@ interface CommentState {
 }
 
 interface Comment {
-    id?: string;
+    _id?: string;
     comment: {
-        id?: string;
+        _id: string;
         created_at: string;
         author?: string;
         text?: string;
+        response?:string
     };
 }
 
@@ -42,7 +43,7 @@ interface Video {
     title: string;
     path: string;
     comments: Comment[];
-    key: String
+    key: string
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
@@ -99,7 +100,7 @@ const ShowVideo = () => {
             })
             setComent({author:'', text:''});
             const comentarios = [...video.comments];
-            comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
+            comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate, _id: obj.id } });
             setVideo({...video, comments: comentarios})
         }
         }

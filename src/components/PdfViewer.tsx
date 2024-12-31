@@ -5,18 +5,10 @@ import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/page-navigation/lib/styles/index.css';
 import { useRouter } from 'next/navigation';
-import { Ruwudu, Cairo } from 'next/font/google'
+
 import { useState, useEffect } from 'react';
 
-const roboto = Ruwudu({
-  subsets: ['arabic'],
-  weight: ['400']
-})
 
-const cairo = Cairo({
-  subsets: ['arabic'],
-  weight: ['400']
-})
 
 interface PDFViewerProps {
   fileUrl: string;

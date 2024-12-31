@@ -28,17 +28,18 @@ interface CommentState {
 }
 
 interface Comment {
-    id?: string;
+    _id?: string;
     comment: {
-        id?: string;
+        _id: string;
         created_at: string;
         author?: string;
         text?: string;
+        response?:string
     };
 }
   
   interface Pdf {
-    id: string
+    _id: string
     title: string;
     path: string;
     category: 'libro' | 'escritos-con-magia' | 'el-camino-de-la-sanacion' | 'lo-que-somos' | 'nobles-verdades';
@@ -92,7 +93,7 @@ const PdfPage: React.FC = () => {
 
                 const date = new Date();
                 const formattedDate = formatDate(date);
-                const obj = { author: coment.author, text: coment.text, id: pdf.id, type: 'pdf', title: pdf.title };
+                const obj = { author: coment.author, text: coment.text, id: pdf._id, type: 'pdf', title: pdf.title };
                 sendComent(obj);
                 toast.success('Comentario enviado!', {
                     position: 'top-center',
@@ -103,7 +104,7 @@ const PdfPage: React.FC = () => {
                 })
                 setComent({author:'', text:''});
                 const comentarios = [...pdf.comments];
-                comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
+                comentarios.push({ comment: {_id: obj.id, author: obj.author, text: obj.text, created_at: formattedDate } });
                 setPdf({...pdf, comments: comentarios})
             }
         }

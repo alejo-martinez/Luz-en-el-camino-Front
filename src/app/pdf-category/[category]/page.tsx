@@ -56,7 +56,7 @@ const PdfCategoryPage: React.FC = () => {
     const { showSidebar } = useSidebar();
 
     const searchParams = useSearchParams();
-    let myQueryParam: string | number | null = searchParams.get('page');
+    const myQueryParam: string | number | null = searchParams.get('page');
 
     const renderCategory = () => {
         switch (category) {

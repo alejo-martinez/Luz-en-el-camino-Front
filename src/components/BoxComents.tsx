@@ -3,13 +3,53 @@
 import React, { useState } from "react";
 import { useSession } from "@/context/SessionContext";
 import { useModal } from "@/context/ModalContext";
-import { Ruwudu, Cairo } from 'next/font/google'
+import {Cairo } from 'next/font/google'
 import { useComent } from "@/context/ComentContext";
 import { toast } from "react-toastify";
 
-interface BoxComentsProps {
-    file: any;
-    type: string
+
+
+interface Pdf {
+    _id: string;
+    title: string;
+    path: string;
+    category: 'libro' | 'escritos-con-magia' | 'el-camino-de-la-sanacion' | 'lo-que-somos' | 'nobles-verdades';
+    comments: Comment[];
+    key: string;
+    commentsCount: number;
+  }
+  
+  interface Video {
+    _id: string;
+    title: string;
+    path: string;
+    comments: Comment[];
+    key: string;
+  }
+  
+  interface Audio {
+    _id: string;
+    title: string;
+    path: string;
+    comments: Comment[];
+    key: string;
+  }
+  
+  
+  interface BoxComentsProps {
+    file: Pdf | Video | Audio ; // Aquí defines que 'file' puede ser un Pdf, Video, Audio o Image
+    type: string;
+  }
+
+interface Comment {
+    _id?: string;
+    comment: {
+        _id: string;
+        created_at: string;
+        author?: string;
+        text?: string;
+        response?:string
+    };
 }
 
 const cairo = Cairo({
@@ -20,7 +60,7 @@ const cairo = Cairo({
 export const BoxComents: React.FC<BoxComentsProps> = ({ file, type }) => {
 
     const { usuario } = useSession();
-    const { setOpen, openComent } = useModal();
+    const {openComent } = useModal();
     const { deleteComent } = useComent();
 
     const deleteComment = async (cid: string, fid: string) => {
@@ -42,7 +82,7 @@ export const BoxComents: React.FC<BoxComentsProps> = ({ file, type }) => {
 
     return (
         <div className={`w-4/5 bg-white flex flex-col gap-y-1 justify-center justify-self-center p-8 rounded-ss-lg rounded-se-lg ${cairo.className} max-xxs:text-xs`}>
-            {file.comments.map((comment: any, index: number) => {
+            {file.comments.map((comment: Comment, index: number) => {
                 return (
                     <div key={index} className='border-solid border-2 border-inherit p-2'>
                         <div className='grid flex-col'>
@@ -56,7 +96,7 @@ export const BoxComents: React.FC<BoxComentsProps> = ({ file, type }) => {
                                 <p className='text-stone-900 first-letter:uppercase'>{comment.comment.text}</p>
                                 {(usuario && usuario.rol === 'admin') &&
                                 <div className="flex justify-between">
-                                    {(!comment.comment.response) &&
+                                    {!comment.comment.response &&
                                     <button className='bg-blue-800 text-white p-1 rounded mt-2' onClick={() => openComent(true, comment.comment._id)}>Responder</button>
                                 
                                 }

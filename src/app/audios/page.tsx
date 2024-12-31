@@ -36,6 +36,16 @@ interface Audio {
     ] | []
 };
 
+interface InfoFetch {
+    pdfs: Audio[];
+    page: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+    prevPage: number | null;
+    nextPage: number | null;
+    totalPages: number;
+}
+
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
 export default function Audios() {
@@ -43,12 +53,12 @@ export default function Audios() {
     const { showSidebar } = useSidebar();
     const [audios, setAudios] = useState<Audio[]>([]);
     
-    const [infoFetch, setInfoFetch] = useState<any>(null);
+    const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
     const [minWidth, setMinWidth] = useState(false);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
     const searchParams = useSearchParams();
-    let myQueryParam: string | null | number = searchParams.get('page');
+    const myQueryParam: string | null | number = searchParams.get('page');
 
     
 
@@ -111,7 +121,7 @@ export default function Audios() {
                         :
                         <div className={`grid flex-col ${!minWidth && 'm-2'} justify-items-center`}>
                             <div className='flex justify-center items-center mt-12'>
-                                {infoFetch.hasPrevPage &&
+                                {infoFetch?.hasPrevPage &&
                                     <div className='flex'>
                                         <button className='text-slate-800 mr-4'>
                                             <Link href={`/audios?page=${infoFetch.prevPage}`}>
@@ -122,10 +132,10 @@ export default function Audios() {
                                 }
                                 <div>
                                     <p className='text-slate-800 font-bold'>
-                                        {infoFetch.page}
+                                        {infoFetch?.page}
                                     </p>
                                 </div>
-                                {infoFetch.hasNextPage &&
+                                {infoFetch?.hasNextPage &&
                                     <div className='flex'>
                                         <button className='text-slate-800 ml-4'>
                                             <Link href={`/audios?page=${infoFetch.nextPage}`}>

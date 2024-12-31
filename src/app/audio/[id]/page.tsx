@@ -31,17 +31,18 @@ interface CommentState {
 }
 
 interface Comment {
-    id?: string;
+    _id?: string;
     comment: {
-        id?: string;
+        _id: string;
         created_at: string;
         author?: string;
         text?: string;
+        response?:string
     };
 }
 
 interface Audio {
-    id: string;
+    _id: string;
     title: string;
     path: string;
     key: string;
@@ -65,7 +66,7 @@ const AudioPage: React.FC = () => {
 
     const [audio, setAudio] = useState<Audio | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [durationSec, setDurationSec] = useState<number | string>(0)
+    const [durationSec, setDurationSec] = useState<number>(0)
     const [comment, setComment] = useState<CommentState>({ author: '', text: '' });
 
 
@@ -89,7 +90,7 @@ const AudioPage: React.FC = () => {
 
                 const date = new Date();
                 const formattedDate = formatDate(date);
-                const obj = { author: comment.author, text: comment.text, id: audio.id, type: 'audio', title: audio.title };
+                const obj = { author: comment.author, text: comment.text, id: audio._id, type: 'audio', title: audio.title };
                 sendComent(obj);
                 toast.success('Comentario enviado!', {
                     position: 'top-center',
@@ -100,7 +101,7 @@ const AudioPage: React.FC = () => {
                 })
                 setComment({ author: '', text: '' });
                 const comentarios = [...audio.comments];
-                comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
+                comentarios.push({ comment: {_id: obj.id, author: obj.author, text: obj.text, created_at: formattedDate } });
                 setAudio({ ...audio, comments: comentarios })
             }
         }
@@ -120,7 +121,7 @@ const AudioPage: React.FC = () => {
                 comment.comment.created_at = formatDate(comment.comment.created_at)
             });
             const newTime = formatTime(data.payload.duration)
-            setDurationSec(newTime);
+            setDurationSec(Number(newTime));
             setAudio(data.payload);
             // return data.payload;
 

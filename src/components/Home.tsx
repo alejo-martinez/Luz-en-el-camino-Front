@@ -24,7 +24,7 @@ export default function Initial() {
                 <div>
                 <p className={`text-center ${cairo.className}`}>Este es el inicio del camino...</p>
                 </div>
-                <div className="">
+                <div>
                     <Link href="https://luzenelcaminopdfs.s3.us-east-2.amazonaws.com/La+noche+oscura.pdf">
                         <p className={`text-center text-lg ${cairo.className}`}>Leer "La noche oscura"</p>
                     </Link>

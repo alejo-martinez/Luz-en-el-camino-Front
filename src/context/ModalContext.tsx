@@ -6,7 +6,7 @@ import api from '@/app/utils/axiosInstance';
 interface ModalContextType {
     open:boolean;
     setOpen:(value:boolean)=> void;
-    sendResponse:(text:string) => any;
+    sendResponse:(text:string) => Promise<{status:string, message:string}>;
     openComent:(bool:boolean, id:string) => void;
 }
 

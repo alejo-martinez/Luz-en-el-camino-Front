@@ -6,37 +6,23 @@ import { Dialog, DialogPanel, Transition } from "@headlessui/react";
 
 import { useModal } from "@/context/ModalContext";
 import { DialogTitle } from "@mui/material";
-import { Ruwudu, Cairo } from 'next/font/google'
-import { useRouter } from "next/navigation";
 
-const roboto = Ruwudu({
-    subsets: ['arabic'],
-    weight: ['400']
-})
 
-const cairo = Cairo({
-    subsets: ['arabic'],
-    weight: ['400']
-})
-
-interface ModalProps {
-    id: string
-}
 
 const ModalResponse = () => {
-    const router = useRouter();
+   
 
     const { open, setOpen, sendResponse } = useModal();
-    const [comment, setComment] = useState('');
+    const [comment, setComment] = useState<string>('');
 
-    const [status, setStatus] = useState(false);
+    const [status, setStatus] = useState<boolean>(false);
 
-    const handleComment = (e: any) => {
+    const handleComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.preventDefault();
         setComment(e.target.value);
     }
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const response = await sendResponse(comment);
         if (response.status === 'succes') {

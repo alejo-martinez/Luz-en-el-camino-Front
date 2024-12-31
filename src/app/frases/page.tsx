@@ -27,12 +27,12 @@ interface Frase {
 export default function Frases() {
 
     const [loading, setLoading] = useState(true);
-    const [frases, setFrases] = useState<any>([]);
+    const [frases, setFrases] = useState<Frase[]>([]);
     
     const { showSidebar } = useSidebar();
 
     const searchParams = useSearchParams();
-    let myQueryParam: string | null | number = searchParams.get('page');
+    const myQueryParam: string | null | number = searchParams.get('page');
 
     const fetchData = async (queryPage: number = 1) => {
         try {

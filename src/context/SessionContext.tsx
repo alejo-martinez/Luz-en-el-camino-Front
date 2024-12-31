@@ -13,11 +13,21 @@ interface User{
 interface SessionContext {
     isLogged:boolean;
     usuario: User | undefined;
-    login: (user:any)=> void | any;
-    register: (user:any)=> void | any;
-    logout: ()=> any;
-    sendCode: ()=> any;
+    login: (user:any)=> void | Promise<{response:{data:{status:string, error: string}}}>;
+    register: (user:any)=> void | Promise<{response:{data:{status:string, error: string}}}>;
+    logout: ()=> Promise<{status:string, }>;
     loading: boolean;
+}
+
+interface UserLogin {
+    email: string,
+    password: string
+}
+
+interface UserRegistered {
+    name:string,
+    email:string,
+    password:string
 }
 
 const SessionContext = createContext<SessionContext | undefined>(undefined);
@@ -38,28 +48,43 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }
 
-    const login = async(user:any)=>{
+    const login = async(user:UserLogin)=>{
         try {
             const result = await api.post('/api/session/login', user);
             const data = result.data;
             console.log(data.payload)
             setUsuario(data.payload);
             localStorage.setItem('usuario', JSON.stringify(data.payload));
-
-        } catch (error) {
+            return data;
+        } catch (error:unknown) {
             console.log(`Error aqui: ${error}`);
-            return error;
+            return {
+                response: {
+                    data: {
+                        status: "error",   // Status de error si algo falla
+                        error: "Login failed", // Aquí va el mensaje de error
+                    },
+                },
+            };
         }
     }
 
-    const register = async(user:any)=>{
+    const register = async(user:UserRegistered)=>{
         try {
             const result = await api.post('/api/session/register', user);
             const data = result.data;
             console.log(result.data)
-        } catch (error) {
+            return data;
+        } catch (error:unknown) {
             console.log(error);
-            return error;
+            return {
+                response: {
+                    data: {
+                        status: "error",   // Status de error si algo falla
+                        error: "Error al registrarse", // Aquí va el mensaje de error
+                    },
+                },
+            };
         }
     }
 
@@ -77,14 +102,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }
 
-    const sendCode = async()=>{
-        try {
-            
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     useEffect(()=>{
         const storedUser = localStorage.getItem('usuario');
         if (storedUser) {
@@ -97,7 +114,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }, [])
 
     return (
-        <SessionContext.Provider value={{usuario, login, isLogged, register, logout, sendCode, loading}}>
+        <SessionContext.Provider value={{usuario, login, isLogged, register, logout, loading}}>
             {children}
         </SessionContext.Provider>
     )

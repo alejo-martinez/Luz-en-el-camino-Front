@@ -14,7 +14,7 @@ interface ComentData{
 
 interface ComentContextType{
     sendComent:(data:ComentData)=> void;
-    deleteComent:(fid:string, type:string, cid:string) => any;
+    deleteComent:(fid:string, type:string, cid:string) => Promise<{status:string, message:string}>;
 }
 
 const ComentContext = createContext<ComentContextType | undefined>(undefined);

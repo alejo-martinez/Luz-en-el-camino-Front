@@ -28,7 +28,7 @@ interface Video {
     title: string;
     path: string;
     comments: Comment[];
-    key: String
+    key: string
 }
 
 interface InfoFetch {
@@ -43,7 +43,7 @@ interface InfoFetch {
 
 const Videos = () => {
     const searchParams = useSearchParams();
-    let myQueryParam: string | null | number = searchParams.get('page');
+    const myQueryParam: string | null | number = searchParams.get('page');
     
     const { showSidebar } = useSidebar();
 

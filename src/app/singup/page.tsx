@@ -47,15 +47,18 @@ export default function SignUp() {
                 })
             } else{
                 const response = await register({name:userRegister.name, email: userRegister.email, password: userRegister.password});
-                console.log(response.response)
-                if(response.response.data.status === 'error'){
-                    Swal.fire({
+                if(response){
+
+                    console.log(response.response)
+                    if(response.response.data.status === 'error'){
+                        Swal.fire({
                         title:'Error',
                         text:`${response.response.data.error}`,
                         icon:'error',
                         showCloseButton:true
                     })
                 }
+            }
             }
                 
         // router.push('/singin');

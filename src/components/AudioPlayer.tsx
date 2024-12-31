@@ -24,7 +24,7 @@ const roboto = Ruwudu({
 
 interface PropsComponent {
     audio: {
-        id: string,
+        _id: string,
         title: string,
         duration: number,
         path: string

@@ -1,15 +1,7 @@
 import Link from "next/link"
-import {Ruwudu, Cairo} from 'next/font/google'
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
+
 
 export default function UserPanel() {
 

@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import Link from "next/link";
 import { useSidebar } from "@/context/SidebarContext";
 import { Cairo } from 'next/font/google';
-import { IconButton } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useSession } from "@/context/SessionContext";
 import {useRouter} from "next/navigation";
@@ -16,9 +15,9 @@ const cairo = Cairo({
 })
 
 export default function Sidebar() {
-    const [isOpen, setIsOpen] = useState(false);
-    const { logout, usuario } = useSession();
-    let timeoutId: any; // Para almacenar el timeout
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { usuario } = useSession();
+    let timeoutId: NodeJS.Timeout; // Para almacenar el timeout
     const { showSidebar } = useSidebar();
 
     const router = useRouter();

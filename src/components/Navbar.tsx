@@ -1,12 +1,12 @@
 'use client';
 
 import Link from "next/link"
-import SearchBar from "./SearchBar"
+
 import { useSidebar } from "@/context/SidebarContext";
 import { useSession } from "@/context/SessionContext";
-import { useRouter } from "next/navigation";
+
 import { Cairo } from 'next/font/google'
-import InstagramIcon from '@mui/icons-material/Instagram';
+
 
 const cairo = Cairo({
     subsets: ['arabic'],
@@ -14,7 +14,7 @@ const cairo = Cairo({
 })
 
 export default function Navbar() {
-    const router = useRouter();
+    
 
     const { setIsShown } = useSidebar()
     const { usuario, logout, loading } = useSession();
