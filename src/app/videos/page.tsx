@@ -1,6 +1,6 @@
 'use client';
 
-import React, {Suspense} from "react";
+import React, { Suspense } from "react";
 
 import { useEffect, useState } from "react";
 
@@ -34,7 +34,7 @@ interface Video {
 }
 
 interface InfoFetch {
-    videos:Video[];
+    videos: Video[];
     page: number;
     hasPrevPage: boolean;
     hasNextPage: boolean;
@@ -43,10 +43,10 @@ interface InfoFetch {
     totalPages: number;
 }
 
-const Videos = () => {
+const VideosPage = () => {
     const searchParams = useSearchParams();
     const myQueryParam: string | null | number = searchParams.get('page');
-    
+
     const { showSidebar } = useSidebar();
 
     const [videos, setVideos] = useState<Video[]>([]);
@@ -66,99 +66,104 @@ const Videos = () => {
     }
 
     useEffect(() => {
-        if(myQueryParam) fetchData(myQueryParam, filter);
-        
+        if (myQueryParam) fetchData(myQueryParam, filter);
+
     }, [myQueryParam, filter])
 
-    useEffect(()=>{
+    useEffect(() => {
         const width = window.innerWidth;
-        if(width <= 620) setMinWidth(true);
-    },[])
+        if (width <= 620) setMinWidth(true);
+    }, [])
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
 
-        <div>
-            <div className="absolute top-16 left-0 h-full">
-                {showSidebar &&
-                    <Sidebar />
-                }
-            </div>
-            <div className="color-background min-h-screen">
-
-                <div className="">
-                    <Navbar />
+            <div>
+                <div className="absolute top-16 left-0 h-full">
+                    {showSidebar &&
+                        <Sidebar />
+                    }
                 </div>
-                <div className="">
-                    <h1 className={`text-center font-bold text-3xl mt-8 mb-8 ${roboto.className}`}>Videos</h1>
-                    <div className='flex justify-center mb-5'>
-                        {infoFetch?.hasPrevPage &&
-                            <div className='flex'>
-                                <button className='text-slate-800 mr-4'>
-                                    <Link href={`/videos?page=${infoFetch.prevPage}`}>
-                                        <ArrowLeftIcon className='h-4 w-4' />
-                                    </Link>
-                                </button>
-                            </div>
-                        }
-                        <div>
-                            <p className='text-slate-800 font-bold'>
-                                {infoFetch?.page}
-                            </p>
-                        </div>
-                        {infoFetch?.hasNextPage &&
-                            <div className='flex'>
-                                <button className='text-slate-800 ml-4'>
-                                    <Link href={`/videos?page=${infoFetch.nextPage}`}>
-                                        <ArrowRightIcon className='h-4 w-4' />
-                                    </Link>
-                                </button>
-                            </div>
-                        }
+                <div className="color-background min-h-screen">
+
+                    <div className="">
+                        <Navbar />
                     </div>
-                    <div className={`w-full ${cairo.className}`}>
-                        <div className="ml-4 mb-4 gap-4 flex items-center">
-                            <span className={`text-xp`}>Ordenar por:</span>
-                            <select name="filter" className="text-center rounded" defaultValue={'none'} onChange={handleFilter}>
-                                <option value="oldest">Mas antiguos</option>
-
-                                <option value="newest">Mas recientes</option>
-                                {/* <option value="coments">Mas comentados</option> */}
-                                <option value="alfabetic">A-Z</option>
-                                <option value="reversed">Z-A</option>
-                            </select>
+                    <div className="">
+                        <h1 className={`text-center font-bold text-3xl mt-8 mb-8 ${roboto.className}`}>Videos</h1>
+                        <div className='flex justify-center mb-5'>
+                            {infoFetch?.hasPrevPage &&
+                                <div className='flex'>
+                                    <button className='text-slate-800 mr-4'>
+                                        <Link href={`/videos?page=${infoFetch.prevPage}`}>
+                                            <ArrowLeftIcon className='h-4 w-4' />
+                                        </Link>
+                                    </button>
+                                </div>
+                            }
+                            <div>
+                                <p className='text-slate-800 font-bold'>
+                                    {infoFetch?.page}
+                                </p>
+                            </div>
+                            {infoFetch?.hasNextPage &&
+                                <div className='flex'>
+                                    <button className='text-slate-800 ml-4'>
+                                        <Link href={`/videos?page=${infoFetch.nextPage}`}>
+                                            <ArrowRightIcon className='h-4 w-4' />
+                                        </Link>
+                                    </button>
+                                </div>
+                            }
                         </div>
-                        <table className='w-full text-center text-slate-900 font-bold border shadow-lg shadow-black color-bg-table max-s:text-xs'>
-                            <thead className='border'>
-                                <tr>
-                                    <th className='px-4 py-2 border'>Título</th>
-                                    <th></th>
-                                    {!minWidth && 
-                                    <th className='px-0.5 py-2 border max-w-10'>Comentarios</th>
-                                }
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div className={`w-full ${cairo.className}`}>
+                            <div className="ml-4 mb-4 gap-4 flex items-center">
+                                <span className={`text-xp`}>Ordenar por:</span>
+                                <select name="filter" className="text-center rounded" defaultValue={'none'} onChange={handleFilter}>
+                                    <option value="oldest">Mas antiguos</option>
 
-                                {videos?.map((video: Video, index: number) => (
-                                    <tr key={`${video._id}${index}`}>
-                                        <td className='px-4 py-2 border font-bold text-left'>{video.title}</td>
-                                        <td className='px-4 py-2 border'><Link href={`/video/${video._id}`}>Ver video</Link></td>
-                                        {!minWidth && 
-                                        <td className='px-0.5 py-2 border max-w-10'>{video.comments.length}</td>
-                                    }
-
+                                    <option value="newest">Mas recientes</option>
+                                    {/* <option value="coments">Mas comentados</option> */}
+                                    <option value="alfabetic">A-Z</option>
+                                    <option value="reversed">Z-A</option>
+                                </select>
+                            </div>
+                            <table className='w-full text-center text-slate-900 font-bold border shadow-lg shadow-black color-bg-table max-s:text-xs'>
+                                <thead className='border'>
+                                    <tr>
+                                        <th className='px-4 py-2 border'>Título</th>
+                                        <th></th>
+                                        {!minWidth &&
+                                            <th className='px-0.5 py-2 border max-w-10'>Comentarios</th>
+                                        }
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+
+                                    {videos?.map((video: Video, index: number) => (
+                                        <tr key={`${video._id}${index}`}>
+                                            <td className='px-4 py-2 border font-bold text-left'>{video.title}</td>
+                                            <td className='px-4 py-2 border'><Link href={`/video/${video._id}`}>Ver video</Link></td>
+                                            {!minWidth &&
+                                                <td className='px-0.5 py-2 border max-w-10'>{video.comments.length}</td>
+                                            }
+
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-                                </Suspense>
+            </div>
+        
     )
 }
 
-export default Videos;
+export default function Videos() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <VideosPage />
+        </Suspense>
+    );
+}

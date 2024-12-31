@@ -48,7 +48,7 @@ interface InfoFetch {
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
-export default function Audios() {
+const AudiosPage = ()=> {
 
     const { showSidebar } = useSidebar();
     const [audios, setAudios] = useState<Audio[]>([]);
@@ -94,7 +94,6 @@ export default function Audios() {
 
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
 
         <div className='color-background'>
             <div className=''>
@@ -191,6 +190,13 @@ export default function Audios() {
                 </div>
             }
         </div>
-                    </Suspense>
     )
+}
+
+export default function Audios() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AudiosPage />
+        </Suspense>
+    );
 }

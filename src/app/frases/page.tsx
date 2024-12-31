@@ -26,7 +26,7 @@ interface Frase {
     key: string;
   }
 
-export default function Frases() {
+const FrasesPage = ()=> {
 
     const [loading, setLoading] = useState(true);
     const [frases, setFrases] = useState<Frase[]>([]);
@@ -53,7 +53,6 @@ export default function Frases() {
     }, [myQueryParam]);
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
 
         <div className="min-h-screen color-background">
             <div className="absolute top-16 left-0 h-full">
@@ -89,6 +88,13 @@ export default function Frases() {
             }
 
         </div>
-            </Suspense>
     )
+}
+
+export default function Frases() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <FrasesPage />
+        </Suspense>
+    );
 }
