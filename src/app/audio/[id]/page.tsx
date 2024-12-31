@@ -66,7 +66,7 @@ const AudioPage: React.FC = () => {
 
     const [audio, setAudio] = useState<Audio | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [durationSec, setDurationSec] = useState<number>(0)
+    const [durationSec, setDurationSec] = useState<number | string>(0)
     const [comment, setComment] = useState<CommentState>({ author: '', text: '' });
 
 
@@ -121,7 +121,8 @@ const AudioPage: React.FC = () => {
                 comment.comment.created_at = formatDate(comment.comment.created_at)
             });
             const newTime = formatTime(data.payload.duration)
-            setDurationSec(Number(newTime));
+            console.log(newTime)
+            setDurationSec(newTime);
             setAudio(data.payload);
             // return data.payload;
 

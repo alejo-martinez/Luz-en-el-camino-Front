@@ -38,7 +38,8 @@ export default function SignIn() {
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             const response = await login(userLogin);
-            if(response && response.response.data.status === 'error'){
+            
+            if(response && response.response?.data?.status === 'error'){
                 Swal.fire({
                     title:'Error',
                     text:`${response.response.data.error}`,

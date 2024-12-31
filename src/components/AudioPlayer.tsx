@@ -29,7 +29,7 @@ interface PropsComponent {
         duration: number,
         path: string
     },
-    durationS: number
+    durationS: number | string
 }
 
 export const MediaControlCard: React.FC<PropsComponent> = ({ audio, durationS }) => {
