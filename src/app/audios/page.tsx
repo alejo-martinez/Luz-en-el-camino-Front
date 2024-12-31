@@ -1,6 +1,6 @@
 'use client';
 
-
+import React,{Suspense} from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -94,6 +94,8 @@ export default function Audios() {
 
 
     return (
+        <Suspense fallback={<div>Loading...</div>}>
+
         <div className='color-background'>
             <div className=''>
                 <Navbar />
@@ -108,7 +110,7 @@ export default function Audios() {
                     <p className='text-center text-slate-800 font-bold'>Cargando...</p>
                 </div>
                 :
-
+                
                 <div className={`grid flex-col min-h-screen initial aling-center ${cairo.className}`}>
                     <div className='flex flex-col items-center mt-12'>
                         <img src="/mandalavioleta.webp" width={150} alt="" className='rounded-lg' />
@@ -161,7 +163,7 @@ export default function Audios() {
                                     <tr>
                                         {!minWidth && 
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>#</th>
-                                        }
+                                    }
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Título</th>
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Comentarios</th>
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Duración</th>
@@ -174,7 +176,7 @@ export default function Audios() {
                                             <tr key={`${audio._id}${index}`} className='text-center'>
                                                 {!minWidth &&
                                                 <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{index}</td>
-                                                }
+                                            }
                                                 <td className='first-letter:uppercase py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.title}</td>
                                                 <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.comments.length}</td>
                                                 <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.duration}</td>
@@ -189,5 +191,6 @@ export default function Audios() {
                 </div>
             }
         </div>
+                    </Suspense>
     )
 }

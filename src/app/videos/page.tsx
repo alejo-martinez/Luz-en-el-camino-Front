@@ -1,5 +1,7 @@
 'use client';
 
+import React, {Suspense} from "react";
+
 import { useEffect, useState } from "react";
 
 import Sidebar from "@/components/Sidebar";
@@ -74,6 +76,8 @@ const Videos = () => {
     },[])
 
     return (
+        <Suspense fallback={<div>Loading...</div>}>
+
         <div>
             <div className="absolute top-16 left-0 h-full">
                 {showSidebar &&
@@ -142,7 +146,7 @@ const Videos = () => {
                                         <td className='px-4 py-2 border'><Link href={`/video/${video._id}`}>Ver video</Link></td>
                                         {!minWidth && 
                                         <td className='px-0.5 py-2 border max-w-10'>{video.comments.length}</td>
-                                        }
+                                    }
 
                                     </tr>
                                 ))}
@@ -153,6 +157,7 @@ const Videos = () => {
             </div>
 
         </div>
+                                </Suspense>
     )
 }
 

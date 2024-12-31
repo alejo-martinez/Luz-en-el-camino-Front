@@ -1,5 +1,7 @@
 'use client';
 
+import React, {Suspense} from 'react';
+
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -51,6 +53,8 @@ export default function Frases() {
     }, [myQueryParam]);
 
     return (
+        <Suspense fallback={<div>Loading...</div>}>
+
         <div className="min-h-screen color-background">
             <div className="absolute top-16 left-0 h-full">
                 {showSidebar &&
@@ -85,5 +89,6 @@ export default function Frases() {
             }
 
         </div>
+            </Suspense>
     )
 }
