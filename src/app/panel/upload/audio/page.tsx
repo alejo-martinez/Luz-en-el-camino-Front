@@ -10,17 +10,9 @@ import { useSidebar } from "@/context/SidebarContext";
 import { useSession } from "@/context/SessionContext";
 
 import api from "@/app/utils/axiosInstance";
-import {Ruwudu, Cairo} from 'next/font/google'
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
+
 
 const UploadAudio = () => {
     const { showSidebar } = useSidebar();
@@ -35,11 +27,11 @@ const UploadAudio = () => {
         setSelectedFile(file || null);
     };
 
-    const handleTitle = (e: any) => {
+    const handleTitle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setTitle(e.target.value);
     }
 
-    const handleUpload = async (e:any) => {
+    const handleUpload = async (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedFile) {
             alert("Por favor, selecciona un archivo");
@@ -94,9 +86,7 @@ const UploadAudio = () => {
                                         <label>Título</label>
                                         <input type="text" onChange={handleTitle} name="title" className="p-px rounded text-slate-800" />
                                     </div>
-                                    {/* <div>
-                                        <input type="file" onChange={handleFileChange} />
-                                    </div> */}
+                                
                                     <div className="container">
                                         <div className="header">
                                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

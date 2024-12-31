@@ -2,28 +2,22 @@
 
 import { useSidebar } from "@/context/SidebarContext";
 
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { useRouter } from "next/navigation";
 
 import Swal from 'sweetalert2';
 import Link from "next/link";
 
-import api from "../utils/axiosInstance";
 
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import { useSession } from "@/context/SessionContext";
-import {Ruwudu, Cairo} from 'next/font/google'
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
+interface UserLogin {
+    email: string,
+    password: string
+}
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
 
 export default function SignIn() {
 
@@ -31,18 +25,17 @@ export default function SignIn() {
 
     const { showSidebar } = useSidebar();
     const { login } = useSession();
-    const [userLogin, setUserLogin] = useState({ email: '', password: '' });
-    const [previousPage, setPreviousPage] = useState<string | null>(null);
-    // const [mounted, setMounted] = useState(false);
+    const [userLogin, setUserLogin] = useState<UserLogin>({ email: '', password: '' });
 
 
-    const handleChange = (e: any) => {
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.preventDefault();
         setUserLogin({ ...userLogin, [e.target.name]: e.target.value });
     }
 
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             const response = await login(userLogin);
             if(response && response.response.data.status === 'error'){

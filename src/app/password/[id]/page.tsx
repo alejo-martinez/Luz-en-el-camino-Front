@@ -3,47 +3,28 @@
 import { useEffect, useState } from 'react';
 
 import { useParams } from 'next/navigation';
-import PdfViewer from '@/components/PdfViewer';
+
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import { useSidebar } from '@/context/SidebarContext';
-import { Footer } from '@/components/Footer';
+
 import { useRouter } from 'next/navigation';
 
-import { Ruwudu, Cairo } from 'next/font/google'
 import api from '@/app/utils/axiosInstance';
 import { toast } from 'react-toastify';
 
-const roboto = Ruwudu({
-    subsets: ['arabic'],
-    weight: ['400']
-})
 
-const cairo = Cairo({
-    subsets: ['arabic'],
-    weight: ['400']
-})
 
-const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
-const fetchData = async (fraseId: string) => {
-    try {
-        const response = await fetch(`${baseUrl}/api/frase/${fraseId}`);
-        const data = await response.json();
-        console.log(data)
-        return data.payload;
 
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 const PasswordUpdate: React.FC = () => {
     const { id } = useParams();
     const router = useRouter();
     const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
-    const [loading, setLoading] = useState(null);
+
     const { showSidebar } = useSidebar();
     const [code, setCode] = useState('');
     const [validated, setValidated] = useState(false);
@@ -51,20 +32,20 @@ const PasswordUpdate: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
 
 
-    const handleChange = (e: any) => {
+    const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault();
         setCode(e.target.value);
     }
-    const handleChangePassword = (e: any) => {
+    const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault();
         setNewPassword(e.target.value);
     }
-    const handleChangeConfirmPassword = (e: any) => {
+    const handleChangeConfirmPassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault();
         setConfirmPassword(e.target.value);
     }
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const response = await api.post(`${baseUrl}/api/session/reset/${id}`, { code: code });
         if (response.data.status === 'succes') {
@@ -73,7 +54,7 @@ const PasswordUpdate: React.FC = () => {
         }
     }
 
-    const handleSubmitPassword = async (e: any) => {
+    const handleSubmitPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const response = await api.put(`${baseUrl}/api/session/update/${id}`, { password: newPassword });
         if (response.data.status === 'succes') {

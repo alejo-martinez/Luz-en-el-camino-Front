@@ -2,47 +2,37 @@
 
 import { useSidebar } from "@/context/SidebarContext";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Swal from 'sweetalert2';
-import Link from "next/link";
+
 
 import api from "@/app/utils/axiosInstance";
 
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import { useSession } from "@/context/SessionContext";
-import {Ruwudu, Cairo} from 'next/font/google'
-import { toast } from "react-toastify";
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
+
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
 export default function PasswordReset() {
 
-    const router = useRouter();
 
     const { showSidebar } = useSidebar();
-    const { login } = useSession();
+ 
     const [email, setEmail] = useState('');
 
-        const handleChange = (e: any) => {
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             e.preventDefault();
             setEmail(e.target.value);
         }
     
     
-        const handleSubmit = async (e: any) => {
+        const handleSubmit = async (e:  React.MouseEvent<HTMLButtonElement>) => {
                 e.preventDefault();
                 const response = await api.post(`${baseUrl}/api/session/reset`, {email:email});
                 if(response.data.status === 'succes'){

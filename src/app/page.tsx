@@ -1,24 +1,21 @@
 'use client';
-import Link from "next/link";
 
 //Componentes
 import Navbar from "@/components/Navbar";
-import SearchBar from "@/components/SearchBar";
-import UserPanel from "@/components/UserPanel";
 import Initial from "@/components/Home";
 import Sidebar from "@/components/Sidebar";
-import { Footer } from "@/components/Footer";
+
 import { useEffect, useState } from 'react';
-// import AudioPlayer from '../components/AudioPlayer';
-import { useAudio } from "@/context/AudioContext";
+
+
 import { useSidebar } from "@/context/SidebarContext";
 import Loading from "@/components/Loading";
 
 export default function Home() {
-  const [showPlayer, setShowPlayer] = useState(false);
-  const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState<boolean>(true);
   const { showSidebar } = useSidebar();
-  const { isPlaying } = useAudio()
+
 
 
   useEffect(() => {

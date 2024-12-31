@@ -9,18 +9,10 @@ import { useSidebar } from "@/context/SidebarContext";
 import { useRouter } from "next/navigation";
 
 import api from "@/app/utils/axiosInstance";
-import {Ruwudu, Cairo} from 'next/font/google'
+
 import { useSession } from "@/context/SessionContext";
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
 
 const UploadFrase = () => {
     const { showSidebar } = useSidebar();
@@ -36,11 +28,11 @@ const UploadFrase = () => {
         setSelectedFile(file || null);
     };
 
-    const handleTitle = (e: any) => {
+    const handleTitle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setTitle(e.target.value);
     }
 
-    const handleUpload = async (e:any) => {
+    const handleUpload = async (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedFile) {
             alert("Por favor, selecciona un archivo");

@@ -9,23 +9,43 @@ import Navbar from '@/components/Navbar';
 import { useSidebar } from '@/context/SidebarContext';
 import ModalResponse from '@/components/InputResponse';
 import { useSession } from "@/context/SessionContext";
-import { useModal } from '@/context/ModalContext';
+
 import { useComent } from '@/context/ComentContext';
-import { Ruwudu, Cairo } from 'next/font/google'
+import { Ruwudu } from 'next/font/google'
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { BoxComents } from '@/components/BoxComents';
-import { Footer } from '@/components/Footer';
+
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
     weight: ['400']
 })
 
-const cairo = Cairo({
-    subsets: ['arabic'],
-    weight: ['400']
-})
+interface CommentState {
+    author: string,
+    text: string
+}
+
+interface Comment {
+    id?: string;
+    comment: {
+        id?: string;
+        created_at: string;
+        author?: string;
+        text?: string;
+    };
+}
+  
+  interface Pdf {
+    id: string
+    title: string;
+    path: string;
+    category: 'libro' | 'escritos-con-magia' | 'el-camino-de-la-sanacion' | 'lo-que-somos' | 'nobles-verdades';
+    comments: Comment[];
+    key: string;
+    commentsCount: number;
+  }
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
@@ -43,24 +63,24 @@ const fetchData = async (pdfId: string) => {
 
 const PdfPage: React.FC = () => {
     const { id } = useParams();
-    const [pdf, setPdf] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [pdf, setPdf] = useState<Pdf | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const { showSidebar } = useSidebar();
     const { usuario } = useSession();
-    const { setOpen } = useModal();
-    const { sendComent } = useComent();
-    const [coment, setComent] = useState<any>({ author: '', text: '' });
 
-    const formatDate = (date: any) => {
+    const { sendComent } = useComent();
+    const [coment, setComent] = useState<CommentState>({ author: '', text: '' });
+
+    const formatDate = (date: Date | string) => {
         const newDate = new Date(date);
         return `${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}`
     };
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setComent({ ...coment, [e.target.name]: e.target.value });
     }
 
-    const comentPdf = (e: any) => {
+    const comentPdf = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (coment.text.length < 1) Swal.fire({
             icon: 'error',
@@ -68,21 +88,24 @@ const PdfPage: React.FC = () => {
             text: 'Ingrese un comentario porfavor'
         })
         else {
-            const date = new Date();
-            const formattedDate = formatDate(date);
-            const obj = { author: coment.author, text: coment.text, id: pdf._id, type: 'pdf', title: pdf.title };
-            sendComent(obj);
-            toast.success('Comentario enviado!', {
-                position: 'top-center',
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeButton: false,
-                pauseOnHover: false
-            })
-            setComent({autor:'', text:''});
-            const comentarios = [...pdf.comments];
-            comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
-            setPdf({...pdf, comments: comentarios})
+            if(pdf){
+
+                const date = new Date();
+                const formattedDate = formatDate(date);
+                const obj = { author: coment.author, text: coment.text, id: pdf.id, type: 'pdf', title: pdf.title };
+                sendComent(obj);
+                toast.success('Comentario enviado!', {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeButton: false,
+                    pauseOnHover: false
+                })
+                setComent({author:'', text:''});
+                const comentarios = [...pdf.comments];
+                comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
+                setPdf({...pdf, comments: comentarios})
+            }
         }
     }
 
@@ -90,7 +113,7 @@ const PdfPage: React.FC = () => {
         const getData = async () => {
             if (id) {
                 const doc = await fetchData(id as string);
-                doc.comments.forEach((comment: any) => {
+                doc.comments.forEach((comment: Comment) => {
                     comment.comment.created_at = formatDate(comment.comment.created_at)
                 })
                 setPdf(doc); // Actualizar el estado con los datos
@@ -112,11 +135,14 @@ const PdfPage: React.FC = () => {
                 <div className='initial z-0'>
 
                     <div>
-                        <h2 className={`text-slate-800 max-xs:text-xl text-center font-bold md:text-4xl mt-4 ${roboto.className}`}>{pdf.title}</h2>
+                        <h2 className={`text-slate-800 max-xs:text-xl text-center font-bold md:text-4xl mt-4 ${roboto.className}`}>{pdf?.title}</h2>
                     </div>
                     <div className='grid flex-col justify-center w-full'>
-                        <PdfViewer fileUrl={pdf.path} frase={false} />
-                        {pdf.comments.length > 0 ?
+                        {pdf && (
+
+                            <PdfViewer fileUrl={pdf.path} frase={false} />
+                        )}
+                        {pdf?.comments.length && pdf.comments.length > 0 ?
                             <BoxComents file={pdf} type='pdf'/>
                             :
                             <div>

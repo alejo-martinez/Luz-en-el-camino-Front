@@ -10,7 +10,7 @@ import api from "../utils/axiosInstance";
 import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { Ruwudu, Cairo } from 'next/font/google'
-import { Footer } from "@/components/Footer";
+
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
@@ -22,32 +22,50 @@ const cairo = Cairo({
     weight: ['400']
 })
 
-const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
+
+interface Video {
+    _id: string
+    title: string;
+    path: string;
+    comments: Comment[];
+    key: String
+}
+
+interface InfoFetch {
+    videos:Video[];
+    page: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+    prevPage: number | null;
+    nextPage: number | null;
+    totalPages: number;
+}
 
 const Videos = () => {
     const searchParams = useSearchParams();
-    let myQueryParam: any = searchParams.get('page');
-    let filterParam: any = searchParams.get('sort')
+    let myQueryParam: string | null | number = searchParams.get('page');
+    
     const { showSidebar } = useSidebar();
 
-    const [videos, setVideos] = useState<any>([]);
-    const [infoFetch, setInfoFetch] = useState<any>(null);
+    const [videos, setVideos] = useState<Video[]>([]);
+    const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
     const [filter, setFilter] = useState('');
     const [minWidth, setMinWidth] = useState(false);
 
-    const fetchData = async (queryPage: any = 1, queryFilter: any = 'none') => {
+    const fetchData = async (queryPage: number | string = 1, queryFilter: string = 'none') => {
         const result = await api.get(`/api/video?page=${queryPage === null ? 1 : queryPage}&${queryFilter && `sort=${queryFilter}`}`);
         const data = result.data;
         setVideos(data.payload.docs);
         setInfoFetch(data.payload)
     }
 
-    const handleFilter = (e: any) => {
+    const handleFilter = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFilter(e.target.value);
     }
 
     useEffect(() => {
-        fetchData(myQueryParam, filter);
+        if(myQueryParam) fetchData(myQueryParam, filter);
+        
     }, [myQueryParam, filter])
 
     useEffect(()=>{
@@ -118,7 +136,7 @@ const Videos = () => {
                             </thead>
                             <tbody>
 
-                                {videos?.map((video: any, index: number) => (
+                                {videos?.map((video: Video, index: number) => (
                                     <tr key={`${video._id}${index}`}>
                                         <td className='px-4 py-2 border font-bold text-left'>{video.title}</td>
                                         <td className='px-4 py-2 border'><Link href={`/video/${video._id}`}>Ver video</Link></td>

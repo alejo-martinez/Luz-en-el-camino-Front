@@ -22,21 +22,41 @@ const cairo = Cairo({
     weight: ['400']
 })
 
+interface Pdf {
+    _id: string
+    title: string;
+    path: string;
+    category: 'libro' | 'escritos-con-magia' | 'el-camino-de-la-sanacion' | 'lo-que-somos' | 'nobles-verdades';
+    comments: Comment[];
+    key: string;
+    commentsCount: number;
+  }
+
+
+interface InfoFetch {
+    pdfs: Pdf[];
+    page: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+    prevPage: number | null;
+    nextPage: number | null;
+    totalPages: number;
+}
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
 const PdfCategoryPage: React.FC = () => {
 
     const { category } = useParams(); // Obtiene la categoría de la ruta
-    const [pdfs, setPdfs] = useState<any[]>([]); // Almacena los PDFs de la categoría
-    const [infoFetch, setInfoFetch] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [imgPath, setImgPath] = useState('');
+    const [pdfs, setPdfs] = useState<Pdf[]>([]); // Almacena los PDFs de la categoría
+    const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [imgPath, setImgPath] = useState<string>('');
     const [filter, setFilter] = useState('');
     const [minWidth, setMinWidth] = useState(false);
     const { showSidebar } = useSidebar();
 
     const searchParams = useSearchParams();
-    let myQueryParam: any = searchParams.get('page');
+    let myQueryParam: string | number | null = searchParams.get('page');
 
     const renderCategory = () => {
         switch (category) {
@@ -55,7 +75,7 @@ const PdfCategoryPage: React.FC = () => {
         }
     }
 
-    const setImg = (cat: any) => {
+    const setImg = (cat: string) => {
         switch (cat) {
             case 'el-camino-de-la-sanacion':
                 setImgPath('/mirandoalcielo.webp');
@@ -72,11 +92,11 @@ const PdfCategoryPage: React.FC = () => {
         }
     }
 
-    const handleFilter = (e: any) => {
+    const handleFilter = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFilter(e.target.value);
     }
 
-    const fetchPdfs = async (queryPage: number = 1, queryFilter: any) => {
+    const fetchPdfs = async (queryPage: number = 1, queryFilter: string) => {
         try {
             const response = await fetch(`${baseUrl}/api/pdf/pdfs/${category}?page=${queryPage === null ? 1 : queryPage}&${queryFilter && `sort=${queryFilter}`}`);
             const data = await response.json();
@@ -91,12 +111,9 @@ const PdfCategoryPage: React.FC = () => {
     useEffect(() => {
         console.log(category)
         if (category) {
-            fetchPdfs(myQueryParam, filter);
-            setImg(category);
-            // Aquí puedes cargar los PDFs basados en la categoría
-            // Por ejemplo, podrías hacer una llamada a la API o filtrar un array local
-            // const fetchedPdfs = fetchPdfsByCategory(category as string);
-            // setPdfs(fetchedPdfs);
+            if(myQueryParam && typeof myQueryParam === 'number') fetchPdfs(myQueryParam, filter);
+            if(typeof category === 'string') setImg(category);
+
         }
         setLoading(false)
     }, [category, myQueryParam, filter]);

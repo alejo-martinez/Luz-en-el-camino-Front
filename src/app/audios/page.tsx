@@ -1,29 +1,23 @@
 'use client';
-import dynamic from 'next/dynamic';
-// import ReactPlayer from 'react-player';
-const ReactHowler = dynamic(() => import('react-howler'), { ssr: false });
+
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { Cairo } from 'next/font/google';
 
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
-import { FaPlay, FaPause } from 'react-icons/fa';
-import { useAudio } from '@/context/AudioContext';
-// import AudioPlayer from '@/components/AudioPlayer';
+
+
 import { useSidebar } from '@/context/SidebarContext';
 import { formatTime } from '../utils/utils';
-import { Footer } from '@/components/Footer';
+
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-
-// import { PlayIcon, PauseIcon, SunIcon } from '@heroicons/react/solid';
-// import { MoonIcon } from '@heroicons/react/outline';
 
 const cairo = Cairo({
     subsets: ['latin'],
@@ -48,7 +42,7 @@ export default function Audios() {
 
     const { showSidebar } = useSidebar();
     const [audios, setAudios] = useState<Audio[]>([]);
-    const { playAudio, isPlaying, stopAudio, pauseAudio, isShow, updateCurrentTime, currentAudio } = useAudio();
+    
     const [infoFetch, setInfoFetch] = useState<any>(null);
     const [minWidth, setMinWidth] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -56,18 +50,18 @@ export default function Audios() {
     const searchParams = useSearchParams();
     let myQueryParam: string | null | number = searchParams.get('page');
 
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+    
 
 
-    const handleFilter = (e: any) => {
+    const handleFilter = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFilter(e.target.value);
     }
 
-    const fetchData = async (queryPage: any = 1, queryFilter: any) => {
+    const fetchData = async (queryPage: number | string = 1, queryFilter: string) => {
         try {
             const response = await fetch(`${baseUrl}/api/audio?page=${queryPage === null ? 1 : queryPage}&${queryFilter && `sort=${queryFilter}`}`);
             const data = await response.json();
-            data.payload.docs.map((audio: any, index: any) => {
+            data.payload.docs.map((audio: Audio) => {
                 audio.duration = formatTime(Number(audio.duration))
             })
             setInfoFetch(data.payload);
@@ -78,19 +72,10 @@ export default function Audios() {
     }
 
     useEffect(() => {
-        fetchData(myQueryParam, filter);
+        if(myQueryParam) fetchData(myQueryParam, filter);
+        
         setLoading(false);
     }, [myQueryParam, filter]);
-
-    const [isClient, setIsClient] = useState(false); // Verificamos si estamos en el cliente
-    const [playing, setPlaying] = useState(false); // Estado para manejar la reproducción
-    const [playAudioId, setPlayAudioId] = useState('');
-
-
-
-    useEffect(() => {
-        setIsClient(true); // Se activa una vez que el componente está en el cliente
-    }, []);
 
     useEffect(()=>{
         const width = window.innerWidth;
@@ -146,7 +131,7 @@ export default function Audios() {
                                             <Link href={`/audios?page=${infoFetch.nextPage}`}>
                                                 <ArrowRightIcon className='h-4 w-4' />
                                             </Link>
-                                            {/* <span>{infoFetch.page + 1}</span> */}
+                                            
                                         </button>
                                     </div>
                                 }

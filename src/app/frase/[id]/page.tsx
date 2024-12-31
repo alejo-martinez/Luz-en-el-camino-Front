@@ -7,21 +7,16 @@ import PdfViewer from '@/components/PdfViewer';
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import { useSidebar } from '@/context/SidebarContext';
-import { Footer } from '@/components/Footer';
 
-import {Ruwudu, Cairo} from 'next/font/google'
-
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
-
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
+
+interface Frase {
+    created_at: Date;
+    path: string;
+    title: string;
+    key: string;
+  }
 
 const fetchData = async (fraseId: string) => {
     try {
@@ -37,7 +32,7 @@ const fetchData = async (fraseId: string) => {
 
 const PdfPage: React.FC = () => {
     const { id } = useParams();
-    const [pdf, setPdf] = useState<any>(null);
+    const [pdf, setPdf] = useState<Frase | null>(null);
     const [loading, setLoading] = useState(true);
     const {showSidebar} = useSidebar();
 
@@ -63,12 +58,16 @@ const PdfPage: React.FC = () => {
                 <span>Loading...</span>
                 :
                 <div className='initial z-0'>
-
+                    
                     <div>
-                        <h2 className='text-slate-800 text-center font-bold text-2xl mt-4'>{pdf.title}</h2>
+                        {pdf && (
+                            <h2 className='text-slate-800 text-center font-bold text-2xl mt-4'>{pdf.title}</h2>
+                        )}
                     </div>
                     <div className='grid flex-col w-full'>
-                        <PdfViewer fileUrl={pdf.path} frase={true}/>
+                        {pdf && (
+                            <PdfViewer fileUrl={pdf.path} frase={true}/>
+                        )}
                     </div>
                 </div>
             }

@@ -2,46 +2,41 @@
 
 import { useSidebar } from "@/context/SidebarContext";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState} from "react";
+
 
 import Swal from 'sweetalert2';
 
-import api from "../utils/axiosInstance";
+
 
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import { useSession } from "@/context/SessionContext";
-import {Ruwudu, Cairo} from 'next/font/google'
 
-const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
-})
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
+interface UserRegister {
+    name: string,
+    email: string,
+    password: string,
+    confirmPassword: string
+}
 
 export default function SignUp() {
 
-    const router = useRouter();
 
     const { showSidebar } = useSidebar();
     const { register } = useSession();
-    const [userRegister, setUserRegister] = useState({name:'', email: '', password: '', confirmPassword:'' });
-    const [previousPage, setPreviousPage] = useState<string | null>(null);
-    // const [mounted, setMounted] = useState(false);
+    const [userRegister, setUserRegister] = useState<UserRegister>({name:'', email: '', password: '', confirmPassword:'' });
 
 
-    const handleChange = (e: any) => {
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.preventDefault();
         setUserRegister({ ...userRegister, [e.target.name]: e.target.value });
     }
 
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             if(userRegister.password !== userRegister.confirmPassword){
                 Swal.fire({

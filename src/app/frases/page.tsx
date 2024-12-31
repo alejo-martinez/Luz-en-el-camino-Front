@@ -9,7 +9,6 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import { useSidebar } from '@/context/SidebarContext';
 import { Cairo } from 'next/font/google';
-import { Footer } from '@/components/Footer';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 const cairo = Cairo({
@@ -17,22 +16,30 @@ const cairo = Cairo({
     weight: ['400']
 })
 
+interface Frase {
+    _id: string;
+    created_at: Date;
+    path: string;
+    title: string;
+    key: string;
+  }
+
 export default function Frases() {
 
     const [loading, setLoading] = useState(true);
     const [frases, setFrases] = useState<any>([]);
-    const [infoFetch, setInfoFetch] = useState<any>(null);
+    
     const { showSidebar } = useSidebar();
 
     const searchParams = useSearchParams();
     let myQueryParam: string | null | number = searchParams.get('page');
 
-    const fetchData = async (queryPage: any = 1) => {
+    const fetchData = async (queryPage: number = 1) => {
         try {
             const response = await fetch(`${baseUrl}/api/frase?page=${queryPage === null ? 1 : queryPage}`);
             const data = await response.json();
             setFrases(data.payload.docs);
-            setInfoFetch(data.payload);
+            
         } catch (error) {
             console.log(error);
         }
@@ -63,7 +70,7 @@ export default function Frases() {
                     </div>
 
                     <div className='flex max-xs:justify-center justify-between flex-wrap gap-4 mt-12'>
-                        {frases.map((frase: any, index: number) => {
+                        {frases.map((frase: Frase, index: number) => {
                             return (
                                 <div key={`${frase._id}${index}`} className={`color-navbar w-64 p-4 ml-8 mr-8 shadow-lg shadow-black text-white text-center ${cairo.className}`}>
                                     <h4>{frase.title}</h4>

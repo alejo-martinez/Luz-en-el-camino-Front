@@ -6,30 +6,48 @@ import Sidebar from "@/components/Sidebar";
 import { useParams } from 'next/navigation';
 import { useState, useEffect } from "react";
 import { useSession } from "@/context/SessionContext";
-import { useModal } from '@/context/ModalContext';
+
 import { useComent } from "@/context/ComentContext";
 import { useSidebar } from "@/context/SidebarContext";
 import api from "@/app/utils/axiosInstance";
 import ModalResponse from '@/components/InputResponse';
-import { Ruwudu, Cairo } from 'next/font/google'
+import { Ruwudu} from 'next/font/google'
 import Swal from "sweetalert2";
 import { BoxComents } from "@/components/BoxComents";
 import { toast } from "react-toastify";
-import { Footer } from "@/components/Footer";
+
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
     weight: ['400']
 })
 
-const cairo = Cairo({
-    subsets: ['arabic'],
-    weight: ['400']
-})
+interface CommentState {
+    author: string,
+    text: string
+}
+
+interface Comment {
+    id?: string;
+    comment: {
+        id?: string;
+        created_at: string;
+        author?: string;
+        text?: string;
+    };
+}
+
+interface Video {
+    _id: string
+    title: string;
+    path: string;
+    comments: Comment[];
+    key: String
+}
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
-const formatDate = (date: any) => {
+const formatDate = (date: Date | string) => {
     const newDate = new Date(date);
     return `${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}`
 };
@@ -39,26 +57,26 @@ const ShowVideo = () => {
     const { id } = useParams();
     const { showSidebar } = useSidebar();
     const { usuario } = useSession();
-    const { setOpen } = useModal();
+
     const { sendComent } = useComent()
 
-    const [video, setVideo] = useState<any>(null);
-    const [coment, setComent] = useState<any>({ author: '', text: '' });
+    const [video, setVideo] = useState<Video | null>(null);
+    const [coment, setComent] = useState<CommentState>({ author: '', text: '' });
 
-    const fetchData = async (videoId: any) => {
+    const fetchData = async (videoId: string) => {
         const response = await api(`${baseUrl}/api/video/${videoId}`);
         const data = response.data;
-        data.payload.comments.forEach((comment: any) => {
+        data.payload.comments.forEach((comment: Comment) => {
             comment.comment.created_at = formatDate(comment.comment.created_at)
         })
         setVideo(data.payload);
     }
 
-    const handleChange = (e: any) => {
+    const handleChange = (e:  React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setComent({ ...coment, [e.target.name]: e.target.value });
     }
 
-    const comentVideo = (e: any) => {
+    const comentVideo = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (coment.text.length < 1) Swal.fire({
             icon: 'error',
@@ -66,26 +84,30 @@ const ShowVideo = () => {
             text: 'Ingrese un comentario porfavor'
         })
         else {
-            const date = new Date();
-            const formattedDate = formatDate(date);
-            const obj = { author: coment.author, text: coment.text, id: video._id, type: 'video', title: video.title };
-            sendComent(obj);
-            toast.success('Comentario enviado!', {
+            if(video){
+
+                const date = new Date();
+                const formattedDate = formatDate(date);
+                const obj = { author: coment.author, text: coment.text, id: video._id, type: 'video', title: video.title };
+                sendComent(obj);
+                toast.success('Comentario enviado!', {
                 position: 'top-center',
                 autoClose: 3000,
                 hideProgressBar: true,
                 closeButton: false,
                 pauseOnHover: false
             })
-            setComent({autor:'', text:''});
+            setComent({author:'', text:''});
             const comentarios = [...video.comments];
             comentarios.push({ comment: { author: obj.author, text: obj.text, created_at: formattedDate } });
             setVideo({...video, comments: comentarios})
         }
+        }
     }
 
     useEffect(() => {
-        fetchData(id);
+        if(typeof id === 'string') fetchData(id);
+        
     }, []);
 
     return (
@@ -116,7 +138,7 @@ const ShowVideo = () => {
                             Tu navegador no puede reproducir este video.
                         </video>
                     </div>
-                    {video?.comments.length > 0 ?
+                    {video?.comments.length && video.comments.length > 0 ?
                         <BoxComents file={video} type="video"/>
                         :
                         <div>

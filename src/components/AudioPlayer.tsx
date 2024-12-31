@@ -1,29 +1,26 @@
 'use client';
 
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CloseIcon from '@mui/icons-material/Close';
+
 import PauseIcon from '@mui/icons-material/Pause';
 import Slider from '@mui/material/Slider';
 import { useAudio } from '@/context/AudioContext';
-import { formatTime } from '@/app/utils/utils';
-import {Ruwudu, Cairo} from 'next/font/google'
+
+import {Ruwudu} from 'next/font/google'
 
 const roboto = Ruwudu({
     subsets:['arabic'],
     weight:['400']
 })
 
-const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
-})
+
 
 interface PropsComponent {
     audio: {
@@ -32,22 +29,18 @@ interface PropsComponent {
         duration: number,
         path: string
     },
-    durationS: any
+    durationS: number
 }
 
 export const MediaControlCard: React.FC<PropsComponent> = ({ audio, durationS }) => {
-    const theme = useTheme();
+  
     const { stopAudio, playAudio, pauseAudio, audioPath, title, isPlaying, duration, updateCurrentTime, currentTime, currentAudio } = useAudio();
 
     const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-    const [sliderValue, setSliderValue] = React.useState(0);
-    const [durationAudio, setDurationAudio] = React.useState<any>(0);
+    const [sliderValue, setSliderValue] = React.useState<number>(0);
 
 
-    const handleClose = () => {
-        stopAudio();
-    };
 
     const handlePlay = () => {
         if (!isPlaying) {
@@ -70,6 +63,7 @@ export const MediaControlCard: React.FC<PropsComponent> = ({ audio, durationS })
     };
 
     const handleSliderChange = (event: Event, newValue: number | number[]) => {
+        event.preventDefault();
         if (audioRef.current) {
             const newTime = (newValue as number) * audio?.duration / 100;
             audioRef.current.currentTime = newTime;  // Cambia el tiempo del audio
