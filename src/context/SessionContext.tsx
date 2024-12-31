@@ -11,7 +11,7 @@ interface User{
 }
 
 interface SessionContext {
-    isLogged:boolean;
+    // isLogged:boolean;
     usuario: User | undefined;
     login: (user:UserLogin)=> void | Promise<{response:{data:{status:string, error: string}}}>;
     register: (user:UserRegistered)=> void | Promise<{response:{data:{status:string, error: string}}}>;
@@ -35,7 +35,7 @@ const SessionContext = createContext<SessionContext | undefined>(undefined);
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     const [usuario, setUsuario] = useState<User | undefined>(undefined);
-    const [isLogged, setIsLogged] = useState(false);
+    // const [isLogged, setIsLogged] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const current = async()=>{
@@ -114,7 +114,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }, [])
 
     return (
-        <SessionContext.Provider value={{usuario, login, isLogged, register, logout, loading}}>
+        <SessionContext.Provider value={{usuario, login, register, logout, loading}}>
             {children}
         </SessionContext.Provider>
     )

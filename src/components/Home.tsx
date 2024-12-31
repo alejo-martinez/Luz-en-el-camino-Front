@@ -26,7 +26,7 @@ export default function Initial() {
                 </div>
                 <div>
                     <Link href="https://luzenelcaminopdfs.s3.us-east-2.amazonaws.com/La+noche+oscura.pdf">
-                        <p className={`text-center text-lg ${cairo.className}`}>Leer 'La noche oscura'</p>
+                        <p className={`text-center text-lg ${cairo.className}`}>Leer &quot;La noche oscura&quot;</p>
                     </Link>
                 </div>
             </div>
