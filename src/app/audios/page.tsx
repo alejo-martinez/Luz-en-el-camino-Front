@@ -71,6 +71,7 @@ const AudiosPage = ()=> {
         try {
             const response = await fetch(`${baseUrl}/api/audio?page=${queryPage === null ? 1 : queryPage}&${queryFilter && `sort=${queryFilter}`}`);
             const data = await response.json();
+            console.log(data)
             data.payload.docs.map((audio: Audio) => {
                 audio.duration = formatTime(Number(audio.duration))
             })
@@ -82,7 +83,7 @@ const AudiosPage = ()=> {
     }
 
     useEffect(() => {
-        if(myQueryParam) fetchData(myQueryParam, filter);
+        fetchData(myQueryParam || 1, filter);
         
         setLoading(false);
     }, [myQueryParam, filter]);

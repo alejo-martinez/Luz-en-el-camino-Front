@@ -56,7 +56,7 @@ const PdfCategoryPage: React.FC = () => {
     const { showSidebar } = useSidebar();
 
     const searchParams = useSearchParams();
-    const myQueryParam: string | number | null = searchParams.get('page');
+    const myQueryParam: string | null | number = searchParams.get('page');
 
     const renderCategory = () => {
         switch (category) {
@@ -111,7 +111,8 @@ const PdfCategoryPage: React.FC = () => {
     useEffect(() => {
         console.log(category)
         if (category) {
-            if(myQueryParam && typeof myQueryParam === 'number') fetchPdfs(myQueryParam, filter);
+            const page = myQueryParam ? Number(myQueryParam) : 1;
+            fetchPdfs(page, filter);
             if(typeof category === 'string') setImg(category);
 
         }

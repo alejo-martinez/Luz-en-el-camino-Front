@@ -66,7 +66,7 @@ const VideosPage = () => {
     }
 
     useEffect(() => {
-        if (myQueryParam) fetchData(myQueryParam, filter);
+        fetchData(myQueryParam || 1, filter);
 
     }, [myQueryParam, filter])
 
