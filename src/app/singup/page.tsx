@@ -50,7 +50,7 @@ export default function SignUp() {
                 if(response){
 
                     console.log(response.response)
-                    if(response.response.data.status === 'error'){
+                    if(response.response?.data?.status === 'error'){
                         Swal.fire({
                         title:'Error',
                         text:`${response.response.data.error}`,
