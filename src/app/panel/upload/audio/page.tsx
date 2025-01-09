@@ -11,12 +11,13 @@ import { useSession } from "@/context/SessionContext";
 
 import api from "@/app/utils/axiosInstance";
 
+import { toast } from "react-toastify";
 
 
 
 const UploadAudio = () => {
     const { showSidebar } = useSidebar();
-    const {usuario, loading} = useSession();
+    const { usuario, loading } = useSession();
     const router = useRouter();
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -31,7 +32,7 @@ const UploadAudio = () => {
         setTitle(e.target.value);
     }
 
-    const handleUpload = async (e:React.MouseEvent<HTMLButtonElement>) => {
+    const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedFile) {
             alert("Por favor, selecciona un archivo");
@@ -50,15 +51,21 @@ const UploadAudio = () => {
                 },
             });
 
-            console.log("Respuesta del servidor:", response.data);
+            toast.success(response.data.message, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            });
         } catch (error) {
             console.error("Error al subir el archivo:", error);
         }
     };
 
-    useEffect(()=>{
-        if(!loading){
-            if(!usuario || usuario.rol !== 'admin') router.push('/');
+    useEffect(() => {
+        if (!loading) {
+            if (!usuario || usuario.rol !== 'admin') router.push('/');
         }
     }, [loading]);
 
@@ -86,7 +93,7 @@ const UploadAudio = () => {
                                         <label>Título</label>
                                         <input type="text" onChange={handleTitle} name="title" className="p-px rounded text-slate-800" />
                                     </div>
-                                
+
                                     <div className="container">
                                         <div className="header">
                                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,7 +113,7 @@ const UploadAudio = () => {
                                                     />{" "}
                                                 </g>
                                             </svg>{" "}
-                                            
+
                                         </div>
                                         <label htmlFor="file" className="footer">
                                             <svg
@@ -125,9 +132,9 @@ const UploadAudio = () => {
                                                     <path d="M18.153 6h-.009v5.342H23.5v-.002z" />
                                                 </g>
                                             </svg>
-                                            <p className="text-white">{selectedFile? `"${selectedFile.name}" seleccionado` : "Seleccionar audio"}</p>
+                                            <p className="text-white">{selectedFile ? `"${selectedFile.name}" seleccionado` : "Seleccionar audio"}</p>
                                         </label>
-                                        <input type="file" id="file" style={{display:'hidden'}} onChange={handleFileChange}/>
+                                        <input type="file" id="file" style={{ display: 'hidden' }} onChange={handleFileChange} />
                                     </div>
                                 </div>
                                 <button className="bg-indigo-500 w-fit p-2 rounded mt-8" onClick={handleUpload}>Subir</button>

@@ -10,6 +10,8 @@ import api from "@/app/utils/axiosInstance";
 
 import { useSidebar } from "@/context/SidebarContext";
 
+import { toast } from "react-toastify";
+
 
 const UploadPdf = () => {
     const { showSidebar } = useSidebar();
@@ -54,7 +56,13 @@ const UploadPdf = () => {
                 },
             });
 
-            console.log("Respuesta del servidor:", response.data);
+            toast.success(response.data.message, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            });
         } catch (error) {
             console.error("Error al subir el archivo:", error);
         }
