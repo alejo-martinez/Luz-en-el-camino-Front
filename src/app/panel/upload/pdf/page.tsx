@@ -13,12 +13,17 @@ import { useSidebar } from "@/context/SidebarContext";
 
 const UploadPdf = () => {
     const { showSidebar } = useSidebar();
-    const {usuario, loading} = useSession();
+    const { usuario, loading } = useSession();
 
     const router = useRouter();
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string | null>(null);
+    const [category, setCategory] = useState<string | null>(null);
+
+    const handleCategory = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setCategory(e.target.value);
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -29,7 +34,7 @@ const UploadPdf = () => {
         setTitle(e.target.value);
     }
 
-    const handleUpload = async (e:React.MouseEvent<HTMLButtonElement>) => {
+    const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedFile) {
             alert("Por favor, selecciona un archivo");
@@ -39,6 +44,7 @@ const UploadPdf = () => {
         const formData = new FormData();
         formData.append("file", selectedFile);
         if (title) formData.append("title", title);
+        if (category) formData.append("category", category);
 
 
         try {
@@ -54,9 +60,9 @@ const UploadPdf = () => {
         }
     };
 
-    useEffect(()=>{
-        if(!loading){
-            if(!usuario || usuario.rol !== 'admin') router.push('/');
+    useEffect(() => {
+        if (!loading) {
+            if (!usuario || usuario.rol !== 'admin') router.push('/');
         }
     }, [loading]);
 
@@ -84,6 +90,16 @@ const UploadPdf = () => {
                                         <label>Título</label>
                                         <input type="text" onChange={handleTitle} name="title" className="p-px rounded text-slate-800" />
                                     </div>
+                                    <div className="flex justify-between w-full">
+                                        <span className={`text-xp`}>Categoria:</span>
+                                        <select name="filter" className="text-center rounded p-px rounded text-slate-800" defaultValue={'none'} onChange={handleCategory}>
+                                            <option value="">-------</option>
+                                            <option value="escritos-con-magia">Escritos con magia</option>
+                                            <option value="el-camino-de-la-sanacion">El camino de la sanación</option>
+                                            <option value="lo-que-somos">Lo que somos</option>
+                                            <option value="nobles-verdades">Nobles verdades</option>
+                                        </select>
+                                    </div>
                                     {/* <div>
                                         <input type="file" onChange={handleFileChange} />
                                     </div> */}
@@ -106,7 +122,7 @@ const UploadPdf = () => {
                                                     />{" "}
                                                 </g>
                                             </svg>{" "}
-                                            
+
                                         </div>
                                         <label htmlFor="file" className="footer">
                                             <svg
@@ -125,9 +141,9 @@ const UploadPdf = () => {
                                                     <path d="M18.153 6h-.009v5.342H23.5v-.002z" />
                                                 </g>
                                             </svg>
-                                            <p className="text-white">{selectedFile? `"${selectedFile.name}" seleccionado` : "Seleccionar PDF"}</p>
+                                            <p className="text-white">{selectedFile ? `"${selectedFile.name}" seleccionado` : "Seleccionar PDF"}</p>
                                         </label>
-                                        <input type="file" id="file" style={{display:'hidden'}} onChange={handleFileChange}/>
+                                        <input type="file" id="file" style={{ display: 'hidden' }} onChange={handleFileChange} />
                                     </div>
                                 </div>
                                 <button className="bg-indigo-500 w-fit p-2 rounded mt-8" onClick={handleUpload}>Subir</button>
