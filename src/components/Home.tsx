@@ -1,28 +1,31 @@
 
 import Link from "next/link"
 
-import {Ruwudu, Cairo} from 'next/font/google'
+import { Ruwudu, Cairo } from 'next/font/google'
 
 const roboto = Ruwudu({
-    subsets:['arabic'],
-    weight:['400']
+    subsets: ['arabic'],
+    weight: ['400']
 })
 
 const cairo = Cairo({
-    subsets:['arabic'],
-    weight:['400']
+    subsets: ['arabic'],
+    weight: ['400']
 })
 
 export default function Initial() {
     return (
         <div className="grid flex-col min-h-full">
+            <div className="w-full h-60 overflow-hidden">
+                <img src="/cieloatardecer.webp" alt="" className="w-full h-full object-cover" />
+            </div>
             <div className="text-center mb-32">
                 <h1 className={`text-6xl mt-16 font-bold text-slate-800 ${roboto.className}`}>Luz en el camino</h1>
             </div>
 
             <div className="p-4 h-32 color-navbar shadow-2xl rounded mb-32 flex flex-col content-center flex-wrap w-fit justify-self-center justify-between border-double border-4 border-white text-white">
                 <div>
-                <p className={`text-center ${cairo.className}`}>Este es el inicio del camino...</p>
+                    <p className={`text-center ${cairo.className}`}>Este es el inicio del camino...</p>
                 </div>
                 <div>
                     <Link href="https://luzenelcaminopdfs.s3.us-east-2.amazonaws.com/La+noche+oscura.pdf">
@@ -36,7 +39,7 @@ export default function Initial() {
             </div>
 
             <div className="flex justify-center mt-32">
-                <img src="/piespiedras.webp" alt="" className="w-32 h-34"/>
+                <img src="/piespiedras.webp" alt="" className="w-32 h-34" />
             </div>
         </div>
     )
