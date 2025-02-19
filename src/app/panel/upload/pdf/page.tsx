@@ -72,7 +72,7 @@ const UploadPdf = () => {
         if (!loading) {
             if (!usuario || usuario.rol !== 'admin') router.push('/');
         }
-    }, [loading]);
+    }, [loading, router, usuario]);
 
     return (
         <div>

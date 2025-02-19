@@ -109,7 +109,7 @@ const ShowVideo = () => {
     useEffect(() => {
         if(typeof id === 'string') fetchData(id);
         
-    }, []);
+    }, [id]);
 
     return (
         <div>

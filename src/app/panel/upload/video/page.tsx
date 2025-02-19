@@ -22,7 +22,7 @@ const UploadVideo = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string | null>(null);
     const [converting, setConverting] = useState<boolean | null>(null);
-    const [progress, setProgress] = useState<any>(null);
+    const [progress, setProgress] = useState<number | null>(null);
     const [videoStatus, setVideoStatus] = useState<string | null>(null)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +69,7 @@ const UploadVideo = () => {
         if (!loading) {
             if (!usuario || usuario.rol !== 'admin') router.push('/');
         }
-    }, [loading]);
+    }, [loading, router, usuario]);
 
     useEffect(() => {
         socket.on('video_conversion_progress', (data) => {
@@ -109,7 +109,7 @@ const UploadVideo = () => {
             setTitle(null);
         })
 
-    }, []);
+    }, [converting, videoStatus]);
 
     return (
         <div>

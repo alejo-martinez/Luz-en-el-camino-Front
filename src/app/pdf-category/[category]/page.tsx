@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import { useSidebar } from '@/context/SidebarContext';
@@ -117,7 +118,7 @@ const PdfCategoryPage: React.FC = () => {
 
         }
         setLoading(false)
-    }, [category, myQueryParam, filter]);
+    }, [category, myQueryParam, filter, fetchPdfs]);
 
     useEffect(()=>{
         const width = window.innerWidth;
@@ -142,7 +143,8 @@ const PdfCategoryPage: React.FC = () => {
                     <div className='initial min-h-screen'>
                         <h1 className={`text-center font-bold text-slate-800 flex-wrap mt-5 mb-5 text-4xl ${roboto.className}`}>{renderCategory()}</h1>
                         <div className='grid mb-4'>
-                            <img src={imgPath} width={200} className='rounded-lg justify-self-center' alt={`imagen de ${category}`} />
+                            <Image src={imgPath} width={200} className='rounded-lg justify-self-center' alt={`imagen de ${category}`}/>
+                            
                         </div>
                         <div className='flex justify-center mb-5'>
                             {infoFetch?.hasPrevPage &&

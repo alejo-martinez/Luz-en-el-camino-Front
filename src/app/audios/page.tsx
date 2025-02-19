@@ -3,6 +3,7 @@
 import React,{Suspense} from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 import { useEffect, useState} from "react";
 
@@ -113,8 +114,8 @@ const AudiosPage = ()=> {
                 
                 <div className={`grid flex-col min-h-screen initial aling-center ${cairo.className}`}>
                     <div className='flex flex-col items-center mt-12'>
-                        <img src="/mandalavioleta.webp" width={150} alt="" className='rounded-lg' />
-
+                        
+                        <Image src={"/mandalavioleta.webp"} width={150} className='rounded-lg' alt='mandalaimg'/>
                         <p className='text-center w-2/5 text-slate-800 font-bold mt-8'>Acá te comparto algunas palabras que sanan, para que las hagas tuyas y armes de a poco las propias. Hay meditaciones que te guían para activar tu luz y fortaleza.</p>
                     </div>
 

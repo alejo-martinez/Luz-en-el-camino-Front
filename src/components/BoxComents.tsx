@@ -6,6 +6,7 @@ import { useModal } from "@/context/ModalContext";
 import {Cairo } from 'next/font/google'
 import { useComent } from "@/context/ComentContext";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 
 
@@ -108,7 +109,8 @@ export const BoxComents: React.FC<BoxComentsProps> = ({ file, type }) => {
                             {comment.comment.response &&
                                 <div className='mt-4'>
                                     <div className='flex items-center'>
-                                        <img src="/piespiedras.webp" alt="" className='object-contain rounded-lg' width={50} />
+                                        <Image src={"/piespiedras.webp"} alt="pies piedras img" className="object-contain rounded-lg" width={50}/>
+                                        
                                         <p className='text-stone-900 ml-2'>Luz en el camino respondió:</p>
                                     </div>
                                     <p className='text-stone-400 ml-14 first-letter:uppercase'>{comment.comment.response}</p>

@@ -23,7 +23,7 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     useEffect(()=>{
         if(showSidebar === true) setShowSidebar(false);
-    },[pathname]);
+    },[pathname, showSidebar]);
 
     return (
         <SidebarContext.Provider value={{ setIsShown, showSidebar }}>

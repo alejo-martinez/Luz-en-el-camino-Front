@@ -1,5 +1,6 @@
 
 import Link from "next/link"
+import Image from "next/image"
 
 import { Ruwudu, Cairo } from 'next/font/google'
 
@@ -17,7 +18,7 @@ export default function Initial() {
     return (
         <div className="grid flex-col min-h-full">
             <div className="w-full h-60 overflow-hidden">
-                <img src="/cieloatardecer.webp" alt="" className="w-full h-full object-cover" />
+                <Image src={"/cieloatardecer.webp"} alt="" className="w-full h-full object-cover" width={200}/>
             </div>
             <div className="text-center mb-32">
                 <h1 className={`text-6xl mt-16 font-bold text-slate-800 ${roboto.className}`}>Luz en el camino</h1>
@@ -39,7 +40,8 @@ export default function Initial() {
             </div>
 
             <div className="flex justify-center mt-32">
-                <img src="/piespiedras.webp" alt="" className="w-32 h-34" />
+                <Image src={"/piespiedras.webp"} alt="" className="w-32 h-34" width={50}/>
+                
             </div>
         </div>
     )

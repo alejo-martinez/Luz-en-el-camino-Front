@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Suspense } from 'react';
+import Image from 'next/image';
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -85,7 +86,8 @@ const FrasesPage = () => {
                 <div className={`initial ${cairo.className} min-h-screen`}>
 
                     <div className="flex flex-col justify-center w-full items-center mt-16">
-                        <img src="/apartado-frases-para-meditar.jpg" width={200} alt="" className="rounded" />
+                        <Image src={"/apartado-frases-para-meditar.jpg"} width={200} alt='imgfrases' className='rounded'/>
+                        
                         <p className="text-white max-xs:text-sm text-lg text-center w-2/5 p-3 color-navbar mt-14 shadow-lg shadow-black">Aquí les comparto frases muy breves para que las lleves al corazón cada día y sientas cada palabra. Quizás ayudan a comenzar el proceso de cambio que nos guiará a la paz interior.</p>
                     </div>
 

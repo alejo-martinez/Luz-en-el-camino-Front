@@ -136,7 +136,7 @@ const AudioPage: React.FC = () => {
         if(typeof id === 'string') fetchData(id);
         setLoading(false);
         // setAudio(result.payload);
-    }, [])
+    }, [id, fetchData])
 
     return (
         <div>

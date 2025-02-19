@@ -67,7 +67,7 @@ const UploadAudio = () => {
         if (!loading) {
             if (!usuario || usuario.rol !== 'admin') router.push('/');
         }
-    }, [loading]);
+    }, [loading, usuario, router]);
 
     return (
         <div>
