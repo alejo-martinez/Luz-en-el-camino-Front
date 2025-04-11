@@ -60,12 +60,7 @@ const UploadVideo = () => {
                 closeButton: false,
                 pauseOnHover: false
             });
-        } catch (error:any) {
-            toast.error(error?.message,{
-                position:'top-center',
-                autoClose:5000,
-
-            })
+        } catch (error) {
             console.error("Error al subir el archivo:", error);
         }
     };
