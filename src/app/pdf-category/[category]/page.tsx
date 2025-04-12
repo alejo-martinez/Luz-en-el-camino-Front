@@ -15,7 +15,7 @@ import { Ruwudu, Cairo } from 'next/font/google'
 import api from '@/app/utils/axiosInstance';
 import { toast } from 'react-toastify';
 import { useSession } from '@/context/SessionContext';
-import { useRouter } from 'next/navigation';
+
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
@@ -50,7 +50,7 @@ interface InfoFetch {
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
 const PdfCategoryPage: React.FC = () => {
-    const router = useRouter();
+
     const { category } = useParams(); // Obtiene la categoría de la ruta
     const [pdfs, setPdfs] = useState<Pdf[]>([]); // Almacena los PDFs de la categoría
     const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
@@ -127,7 +127,7 @@ const PdfCategoryPage: React.FC = () => {
                 closeButton: false,
                 pauseOnHover: false
             })
-            router.push(`/pdf-category/${category}`);
+            window.location.reload()
         }
     }
 

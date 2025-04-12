@@ -14,7 +14,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { Ruwudu, Cairo } from 'next/font/google'
 import { useSession } from "@/context/SessionContext";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
@@ -50,7 +50,7 @@ const VideosPage = () => {
     const myQueryParam: string | null | number = searchParams.get('page');
 
     const {usuario} = useSession();
-    const router = useRouter();
+
     const { showSidebar } = useSidebar();
 
     const [videos, setVideos] = useState<Video[]>([]);
@@ -81,7 +81,7 @@ const VideosPage = () => {
                 closeButton: false,
                 pauseOnHover: false
             })
-            router.push('/videos')
+            window.location.reload()
         }
     }
 

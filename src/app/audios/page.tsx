@@ -20,7 +20,7 @@ import { formatTime } from '../utils/utils';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import api from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+
 
 
 const cairo = Cairo({
@@ -53,7 +53,7 @@ interface InfoFetch {
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 
 const AudiosPage = ()=> {
-    const router = useRouter();
+
     const { showSidebar } = useSidebar();
     const [audios, setAudios] = useState<Audio[]>([]);
     const {usuario} = useSession();
@@ -97,7 +97,7 @@ const AudiosPage = ()=> {
                 closeButton: false,
                 pauseOnHover: false
             })
-            router.push('/audios')
+            window.location.reload()
         }
     }
 
