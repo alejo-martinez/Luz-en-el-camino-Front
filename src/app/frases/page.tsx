@@ -12,7 +12,10 @@ import Navbar from "@/components/Navbar";
 
 import { useEffect, useState } from "react";
 import { useSidebar } from '@/context/SidebarContext';
+import { useSession } from '@/context/SessionContext';
 import { Cairo } from 'next/font/google';
+import api from '../utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 const baseUrl = process.env.NEXT_PUBLIC_URL_BACK;
 const cairo = Cairo({
@@ -46,7 +49,7 @@ const FrasesPage = () => {
     const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
 
     const { showSidebar } = useSidebar();
-
+    const {usuario} = useSession();
     const searchParams = useSearchParams();
     const myQueryParam: string | null | number = searchParams.get('page');
 
@@ -60,6 +63,20 @@ const FrasesPage = () => {
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const deleteFrase = async(e: React.MouseEvent<HTMLButtonElement>, id:string)=>{
+        const response = await api.delete(`/api/frase/${id}`);
+        const data = response.data;
+        if(data.status === 'success'){
+            toast.success(data.message,{
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            })
         }
     }
 
@@ -86,7 +103,7 @@ const FrasesPage = () => {
                 <div className={`initial ${cairo.className} min-h-screen`}>
 
                     <div className="flex flex-col justify-center w-full items-center mt-16">
-                        <Image src={"/apartado-frases-para-meditar.jpg"} width={200} alt='imgfrases' className='rounded'/>
+                        <Image src={"/apartado-frases-para-meditar.jpg"} width={200} height={200} alt='imgfrases' className='rounded'/>
                         
                         <p className="text-white max-xs:text-sm text-lg text-center w-2/5 p-3 color-navbar mt-14 shadow-lg shadow-black">Aquí les comparto frases muy breves para que las lleves al corazón cada día y sientas cada palabra. Quizás ayudan a comenzar el proceso de cambio que nos guiará a la paz interior.</p>
                     </div>
@@ -126,6 +143,7 @@ const FrasesPage = () => {
                                     <Link href={`/frase/${frase._id}`}>
                                         <p className='font-bold'>Ir a leer</p>
                                     </Link>
+                                    {(usuario && usuario.rol === 'admin') && <button className='p-1 bg-red-500 rounded cursor-pointer' onClick={(e) => deleteFrase(e, frase._id)}>Eliminar</button>}
                                 </div>
                             )
                         })}

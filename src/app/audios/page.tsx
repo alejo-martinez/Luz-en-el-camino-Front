@@ -13,11 +13,13 @@ import { Cairo } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 
-
+import { useSession } from '@/context/SessionContext';
 import { useSidebar } from '@/context/SidebarContext';
 import { formatTime } from '../utils/utils';
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import api from '../utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 
 const cairo = Cairo({
@@ -53,7 +55,7 @@ const AudiosPage = ()=> {
 
     const { showSidebar } = useSidebar();
     const [audios, setAudios] = useState<Audio[]>([]);
-    
+    const {usuario} = useSession();
     const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
     const [minWidth, setMinWidth] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -80,6 +82,20 @@ const AudiosPage = ()=> {
             setAudios(data.payload.docs)
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const deleteAudio = async(e: React.MouseEvent<HTMLButtonElement>, id:string)=>{
+        const response = await api.delete(`/api/audio/${id}`);
+        const data = response.data;
+        if(data.status === 'success'){
+            toast.success(data.message, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            })
         }
     }
 
@@ -115,7 +131,7 @@ const AudiosPage = ()=> {
                 <div className={`grid flex-col min-h-screen initial aling-center ${cairo.className}`}>
                     <div className='flex flex-col items-center mt-12'>
                         
-                        <Image src={"/mandalavioleta.webp"} width={150} className='rounded-lg' alt='mandalaimg'/>
+                        <Image src={"/mandalavioleta.webp"} width={150} className='rounded-lg' alt='mandalaimg' height={150}/>
                         <p className='text-center w-2/5 text-slate-800 font-bold mt-8'>Acá te comparto algunas palabras que sanan, para que las hagas tuyas y armes de a poco las propias. Hay meditaciones que te guían para activar tu luz y fortaleza.</p>
                     </div>
 
@@ -166,8 +182,9 @@ const AudiosPage = ()=> {
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>#</th>
                                     }
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Título</th>
-                                        <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Comentarios</th>
+                                        <th></th>
                                         <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Duración</th>
+                                        <th className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>Comentarios</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -176,12 +193,12 @@ const AudiosPage = ()=> {
                                         return (
                                             <tr key={`${audio._id}${index}`} className='text-center'>
                                                 {!minWidth &&
-                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{index}</td>
+                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{(usuario && usuario.rol === 'admin') && <button className='p-1 bg-red-500 rounded cursor-pointer' onClick={(e)=> deleteAudio(e, audio._id)}>X</button>} {index}</td>
                                             }
                                                 <td className='first-letter:uppercase py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.title}</td>
-                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.comments.length}</td>
-                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.duration}</td>
                                                 <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'><Link href={`/audio/${audio._id}`}>{minWidth ? <PlayArrowIcon sx={{ height: 10, width: 10 }} /> : 'Escuchar'}</Link></td>
+                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.duration}</td>
+                                                <td className='py-3 px-4 max-xxs:py-1 max-xxs:px-2'>{audio.comments.length}</td>
                                             </tr>
                                         )
                                     })}

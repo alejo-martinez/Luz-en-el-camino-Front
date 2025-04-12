@@ -12,6 +12,9 @@ import Sidebar from '@/components/Sidebar';
 import { useSidebar } from '@/context/SidebarContext';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { Ruwudu, Cairo } from 'next/font/google'
+import api from '@/app/utils/axiosInstance';
+import { toast } from 'react-toastify';
+import { useSession } from '@/context/SessionContext';
 
 const roboto = Ruwudu({
     subsets: ['arabic'],
@@ -55,6 +58,8 @@ const PdfCategoryPage: React.FC = () => {
     const [filter, setFilter] = useState('');
     const [minWidth, setMinWidth] = useState(false);
     const { showSidebar } = useSidebar();
+
+    const {usuario} = useSession();
 
     const searchParams = useSearchParams();
     const myQueryParam: string | null | number = searchParams.get('page');
@@ -109,8 +114,22 @@ const PdfCategoryPage: React.FC = () => {
         }
     }
 
+    const deletePdf = async(e: React.MouseEvent<HTMLButtonElement>, id:string)=>{
+        e.preventDefault();
+        const response = await api.delete(`/api/pdf/${id}`);
+        const data = response.data;
+        if (data.status === 'success'){
+            toast.success(data.message, {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            })
+        }
+    }
+
     useEffect(() => {
-        console.log(category)
         if (category) {
             const page = myQueryParam ? Number(myQueryParam) : 1;
             fetchPdfs(page, filter);
@@ -143,7 +162,7 @@ const PdfCategoryPage: React.FC = () => {
                     <div className='initial min-h-screen'>
                         <h1 className={`text-center font-bold text-slate-800 flex-wrap mt-5 mb-5 text-4xl ${roboto.className}`}>{renderCategory()}</h1>
                         <div className='grid mb-4'>
-                            <Image src={imgPath} width={200} className='rounded-lg justify-self-center' alt={`imagen de ${category}`}/>
+                            <Image src={imgPath} width={200} height={200} className='rounded-lg justify-self-center' alt={`imagen de ${category}`}/>
                             
                         </div>
                         <div className='flex justify-center mb-5'>
@@ -197,7 +216,7 @@ const PdfCategoryPage: React.FC = () => {
 
                                     {pdfs?.map((pdf, index) => (
                                         <tr key={`${pdf._id}${index}`}>
-                                            <td className='px-4 py-2 border text-left'>{pdf.title}</td>
+                                            <td className='px-4 py-2 border text-left'>{(usuario && usuario.rol === 'admin') && <button className='p-1 bg-red-500 cursor-pointer rounded' onClick={(e)=> deletePdf(e, pdf._id)}>X</button>} {pdf.title}</td>
                                             <td className='px-4 py-2 border'><Link href={`/pdf/${pdf._id}`}>Leer</Link></td>
                                             <td className='px-4 py-2 border'><Link href={`${pdf.path}`}>Descargar</Link></td>
                                             {!minWidth &&

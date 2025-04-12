@@ -52,15 +52,24 @@ const UploadVideo = () => {
                     'Content-Type': 'multipart/form-data', // Este encabezado es automático cuando usas FormData
                 },
             });
+            if(response.data.status === 'success'){
 
-            toast.success(response.data.message, {
+                toast.success(response.data.message, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeButton: false,
+                    pauseOnHover: false
+                });
+            }
+        } catch (error:any) {
+            toast.error(error?.message,{
                 position: 'top-center',
                 autoClose: 3000,
                 hideProgressBar: true,
                 closeButton: false,
                 pauseOnHover: false
-            });
-        } catch (error) {
+            })
             console.error("Error al subir el archivo:", error);
         }
     };

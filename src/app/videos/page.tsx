@@ -12,6 +12,8 @@ import api from "../utils/axiosInstance";
 import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
 import { Ruwudu, Cairo } from 'next/font/google'
+import { useSession } from "@/context/SessionContext";
+import { toast } from "react-toastify";
 
 
 const roboto = Ruwudu({
@@ -47,6 +49,8 @@ const VideosPage = () => {
     const searchParams = useSearchParams();
     const myQueryParam: string | null | number = searchParams.get('page');
 
+    const {usuario} = useSession();
+
     const { showSidebar } = useSidebar();
 
     const [videos, setVideos] = useState<Video[]>([]);
@@ -63,6 +67,21 @@ const VideosPage = () => {
 
     const handleFilter = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFilter(e.target.value);
+    }
+
+    const deleteVideo = async(e: React.MouseEvent<HTMLButtonElement>, id:string)=>{
+        e.preventDefault();
+        const response = await api.delete(`/api/video/delete/${id}`);
+        const data = response.data;
+        if(data.status === 'success'){
+            toast.success(data.message,{
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            })
+        }
     }
 
     useEffect(() => {
@@ -141,7 +160,7 @@ const VideosPage = () => {
 
                                     {videos?.map((video: Video, index: number) => (
                                         <tr key={`${video._id}${index}`}>
-                                            <td className='px-4 py-2 border font-bold text-left'>{video.title}</td>
+                                            <td className='px-4 py-2 border font-bold text-left'>{(usuario && usuario.rol === 'admin') && <button className="p-1 bg-red-500 rounded cursor-pointer" onClick={(e)=> deleteVideo(e, video._id)}>X</button>} {video.title}</td>
                                             <td className='px-4 py-2 border'><Link href={`/video/${video._id}`}>Ver video</Link></td>
                                             {!minWidth &&
                                                 <td className='px-0.5 py-2 border max-w-10'>{video.comments.length}</td>
