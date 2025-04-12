@@ -52,7 +52,7 @@ const UploadVideo = () => {
                     'Content-Type': 'multipart/form-data', // Este encabezado es automático cuando usas FormData
                 },
             });
-            if(response.data.status === 'success'){
+            if (response.data.status === 'success') {
 
                 toast.success(response.data.message, {
                     position: 'top-center',
@@ -62,16 +62,27 @@ const UploadVideo = () => {
                     pauseOnHover: false
                 });
             }
-        } catch (error:any) {
-            toast.error(error?.message,{
-                position: 'top-center',
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeButton: false,
-                pauseOnHover: false
-            })
-            console.error("Error al subir el archivo:", error);
-        }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                toast.error(error.message, {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeButton: false,
+                    pauseOnHover: false
+                });
+                console.error("Error al subir el archivo:", error);
+            } else {
+                toast.error('Error desconocido', {
+                    position: 'top-center',
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeButton: false,
+                    pauseOnHover: false
+                });
+                console.error("Error desconocido al subir el archivo:", error);
+            }
+        };
     };
 
     useEffect(() => {
@@ -92,9 +103,9 @@ const UploadVideo = () => {
                 // setConverting(false);
                 setVideoStatus('uploading')
             }
-            if(data.status === 'error'){
+            if (data.status === 'error') {
                 setVideoStatus(null);
-                toast.error(data.message,{
+                toast.error(data.message, {
                     position: 'top-center',
                     autoClose: 4000,
                     hideProgressBar: true,
@@ -139,7 +150,7 @@ const UploadVideo = () => {
                             {videoStatus === 'converting' ?
                                 <div>
                                     <div className="w-full flex justify-center">
-                                    <span className="text-center text-s text-black font-bold">{progress}%</span>
+                                        <span className="text-center text-s text-black font-bold">{progress}%</span>
                                     </div>
                                     <div className="w-full bg-gray-300 rounded-full h-2 relative">
                                         <div
