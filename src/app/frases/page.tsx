@@ -11,6 +11,7 @@ import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 import { useSidebar } from '@/context/SidebarContext';
 import { useSession } from '@/context/SessionContext';
 import { Cairo } from 'next/font/google';
@@ -43,7 +44,7 @@ interface InfoFetch {
 
 
 const FrasesPage = () => {
-
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [frases, setFrases] = useState<Frase[]>([]);
     const [infoFetch, setInfoFetch] = useState<InfoFetch | null>(null);
@@ -77,6 +78,7 @@ const FrasesPage = () => {
                 closeButton: false,
                 pauseOnHover: false
             })
+            router.push('/frases');
         }
     }
 
