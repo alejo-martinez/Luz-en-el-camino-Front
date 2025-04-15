@@ -4,7 +4,7 @@ import axios, {AxiosInstance} from 'axios';
 
 const api:AxiosInstance = axios.create({
     baseURL: url,
-    timeout:15000,
+    timeout:30000,
     withCredentials:true
 })
 
