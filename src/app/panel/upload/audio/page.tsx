@@ -22,6 +22,7 @@ const UploadAudio = () => {
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string | null>(null);
+    const [type, setType] = useState<string>("");
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -32,6 +33,11 @@ const UploadAudio = () => {
         setTitle(e.target.value);
     }
 
+    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setType(e.target.value);
+    };
+
+
     const handleUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedFile) {
@@ -39,9 +45,12 @@ const UploadAudio = () => {
             return;
         }
 
+        if (!type) alert("Por favor, selecciona un tipo de audio");
+
         const formData = new FormData();
         formData.append("file", selectedFile);
         if (title) formData.append("title", title);
+        if (type === 'ucdm') formData.append("type", type);
 
 
         try {
@@ -58,7 +67,18 @@ const UploadAudio = () => {
                 closeButton: false,
                 pauseOnHover: false
             });
+            setSelectedFile(null);
+            setTitle("");
+            setType("");
         } catch (error) {
+            toast.error("Error al subir el archivo", {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeButton: false,
+                pauseOnHover: false
+            });
+
             console.error("Error al subir el archivo:", error);
         }
     };
@@ -92,6 +112,19 @@ const UploadAudio = () => {
                                     <div className="flex justify-between w-full">
                                         <label>Título</label>
                                         <input type="text" onChange={handleTitle} name="title" className="p-px rounded text-slate-800" />
+                                    </div>
+
+                                    <div className="flex flex-col">
+                                        <label className="mb-1">Tipo</label>
+                                        <select
+                                            value={type}
+                                            onChange={handleTypeChange}
+                                            className="p-2 rounded text-slate-800 w-full"
+                                        >
+                                            <option value="">Seleccionar un tipo</option>
+                                            <option value="audio">AUDIO</option>
+                                            <option value="ucdm">UCDM</option>
+                                        </select>
                                     </div>
 
                                     <div className="container">

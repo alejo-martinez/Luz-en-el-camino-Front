@@ -1,13 +1,13 @@
 'use client';
 
-import { useState} from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useSidebar } from "@/context/SidebarContext";
 import { Cairo } from 'next/font/google';
 
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useSession } from "@/context/SessionContext";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const cairo = Cairo({
     subsets: ['arabic'],
@@ -63,6 +63,11 @@ export default function Sidebar() {
                 <li className={`transition-transform duration-300 ease-in-out ${isOpen ? 'transform' : ''}`}>
                     <Link href={"/audios"}>
                         <span className="text-white font-bold">Audios</span>
+                    </Link>
+                </li>
+                <li className={`transition-transform duration-300 ease-in-out ${isOpen ? 'transform' : ''}`}>
+                    <Link href={"/audios/ucdm"}>
+                        <span className="text-white font-bold">Audios UCDM</span>
                     </Link>
                 </li>
                 <li className={`transition-transform duration-300 ease-in-out ${isOpen ? 'transform' : ''}`}>
